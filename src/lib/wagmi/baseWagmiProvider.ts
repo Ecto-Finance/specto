@@ -4,7 +4,12 @@ import type { Connector } from "wagmi";
 
 import { ETHERSCAN_API_KEY, INFURA_ID } from "lib/config/env";
 
-type WagmiProviderConfig = { chainId?: number; connector?: Connector };
+interface WagmiProviderConfig {
+  /** Standard (EIP-155) chain identifier. */
+  chainId?: number;
+  /** Wallet connector. */
+  connector?: Connector;
+}
 
 /**
  * Base `wagmi` provider for HTTP-based RPC.
