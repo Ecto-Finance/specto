@@ -1,0 +1,14 @@
+overwrite: true
+# TODO add GraphQL API endpoint
+# schema: ""
+documents: "src/lib/graphql/**/*.{ts,graphql}"
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - add:
+          content:
+            - "/* eslint-disable */"
+            - "// @ts-nocheck"
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
