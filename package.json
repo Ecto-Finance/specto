@@ -6,6 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "ethsdk:codegen": "eth-sdk --path src/lib/ethsdk",
     "prepare": "husky install"
   },
   "devDependencies": {
