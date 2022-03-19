@@ -2,7 +2,7 @@ import React from "react";
 import type { AppProps } from "next/app";
 import { WagmiProvider } from "wagmi";
 
-import { baseWagmiProvider } from "lib/web3";
+import { baseWagmiProvider } from "lib/wagmi";
 
 /**
  * Custom app entry point.
