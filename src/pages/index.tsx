@@ -14,6 +14,9 @@ const Home: React.FC = () => (
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <Header />
+    <div className="flex flex-col items-center justify-center">
+      Main Section for Home Page
+    </div>
     <Footer />
   </div>
 );
