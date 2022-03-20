@@ -8,13 +8,11 @@ import React from "react";
  */
 const Home: React.FC = () => (
   <>
-    <div className="bg-primary text-contrast min-h-screen">
-      <div className="max-w-7xl mx-auto justify-between">
-        <div className="flex">
-          <ThemeSwitcher />
-          <NetworkSelector />
-          <WalletSelector />
-        </div>
+    <div className="bg-primary text-contrast min-h-screen max-w-7xl mx-auto justify-between">
+      <div className="flex">
+        <ThemeSwitcher />
+        <NetworkSelector />
+        <WalletSelector />
       </div>
     </div>
   </>
