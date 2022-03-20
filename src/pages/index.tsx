@@ -9,11 +9,13 @@ import React from "react";
 const Home: React.FC = () => (
   <>
     <div className="bg-primary text-contrast min-h-screen">
-      {" "}
-      Home page
-      <WalletSelector />
-      <NetworkSelector />
-      <ThemeSwitcher />
+      <div className="max-w-7xl mx-auto justify-between">
+        <div className="flex">
+          <ThemeSwitcher />
+          <NetworkSelector />
+          <WalletSelector />
+        </div>
+      </div>
     </div>
   </>
 );
