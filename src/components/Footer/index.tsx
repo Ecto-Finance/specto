@@ -2,24 +2,6 @@ import React from "react";
 import Image from "next/image";
 
 export const Footer = () => {
-  //could store these in a constants file.
-  const twitterLink = "https://twitter.com/EctoXYZ";
-  const gitbookLink = "https://docs.ecto.xyz/";
-  const githubLink = "https://github.com/Ecto-Finance";
-  const discordLink = "https://discord.com/invite/4FTahmYnRm";
-  const twitterImage = (
-    <Image src="/images/twitter.svg" alt="" width={30} height={30} />
-  );
-  const gitbookImage = (
-    <Image src="/images/gitbook.svg" alt="" width={30} height={30} />
-  );
-  const githubImage = (
-    <Image src="/images/github.svg" alt="" width={30} height={30} />
-  );
-  const discordImage = (
-    <Image src="/images/discord.svg" alt="" width={30} height={30} />
-  );
-
   return (
     <div className="fixed bottom-0 w-full">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-center space-y-2 p-4 sm:flex-row sm:justify-between sm:space-y-0">
@@ -39,10 +21,18 @@ export const Footer = () => {
         </div>
 
         <div className="flex items-center space-x-4 text-center">
-          <a href={twitterLink}>{twitterImage} </a>
-          <a href={githubLink}>{githubImage} </a>
-          <a href={discordLink}>{discordImage} </a>
-          <a href={gitbookLink}>{gitbookImage} </a>
+          <a href="https://twitter.com/EctoXYZ">
+            <Image src="/images/twitter.svg" alt="" width={30} height={30} />
+          </a>
+          <a href="https://github.com/Ecto-Finance">
+            <Image src="/images/github.svg" alt="" width={30} height={30} />
+          </a>
+          <a href="https://discord.com/invite/4FTahmYnRm">
+            <Image src="/images/discord.svg" alt="" width={30} height={30} />
+          </a>
+          <a href="https://docs.ecto.xyz/ecto/start-here">
+            <Image src="/images/gitbook.svg" alt="" width={30} height={30} />
+          </a>
         </div>
       </div>
       <div className="relative flex items-center">
