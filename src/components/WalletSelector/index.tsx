@@ -1,35 +1,9 @@
-import React, { useState } from "react";
-import { Dialog } from "@headlessui/react";
-import {
-  Connector,
-  ConnectorData,
-  useConnect,
-  useAccount,
-  useNetwork,
-} from "wagmi";
-import { useIsMounted } from "../../lib/wagmi/hooks/useIsMounted";
-import { InjectedConnector } from "wagmi/connectors/injected";
+import React from "react";
+import { useConnect, useAccount } from "wagmi";
 
-type Props = {
-  onError?(error: Error): void;
-  onSuccess?(data: ConnectorData): void;
-};
-
-export const WalletSelector = ({ onError, onSuccess }: Props) => {
-  let [isOpen, setIsOpen] = useState(false);
+export const WalletSelector = () => {
   const [{ data: accountData }, disconnect] = useAccount({ fetchEns: true });
-
-  const isMounted = useIsMounted();
-  const [{ data, error, loading }, connect] = useConnect();
-
-  const handleConnect = React.useCallback(
-    async (connector: Connector) => {
-      const { data, error } = await connect(connector);
-      if (error) onError?.(error);
-      if (data) onSuccess?.(data);
-    },
-    [connect, onError, onSuccess]
-  );
+  const [{ data, error }, connect] = useConnect();
 
   return (
     <div>
@@ -44,14 +18,19 @@ export const WalletSelector = ({ onError, onSuccess }: Props) => {
               Connect to MetaMask
             </button>
           ))}
+          {error && <div>{error?.message ?? "Failed to connect"}</div>}
         </div>
       ) : (
-        <button
-          className="border border-black rounded-lg px-2 py-1"
-          onClick={() => [disconnect(), setIsOpen(false)]}
-        >
-          Disconnect
-        </button>
+        <div className="flex items-center">
+          {" "}
+          <button
+            className="border border-black rounded-lg px-2 py-1"
+            onClick={() => [disconnect()]}
+          >
+            Disconnect
+          </button>
+          <div> {accountData?.ens?.name ?? accountData?.address} </div>
+        </div>
       )}
     </div>
   );
