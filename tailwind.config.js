@@ -7,10 +7,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "var(--primary-background)",
-        secondary: "var(--secondary-background)",
-        contrast: "var(--text-color)",
-        "contrast-hover": "var(--text-color-hover)",
+        "primary-dark": "#272727",
+        "primary-light": "#dddddd",
+        "primary-green": "#64c64e",
       },
     },
   },
