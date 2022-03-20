@@ -5,17 +5,21 @@ export const WalletSelector = () => {
   const [{ data: accountData }, disconnect] = useAccount({ fetchEns: true });
   const [{ data, error }, connect] = useConnect();
 
+  function truncateHash(hash: string, length = 38) {
+    return hash.replace(hash.substring(4, length), "..");
+  }
+
   return (
-    <div>
+    <div className="">
       {!accountData ? (
         <div>
           {data.connectors.map((x) => (
             <button
-              className="border border-black rounded-lg px-2 py-1"
+              className="rounded-lg bg-[#64c64e] px-2 py-1 hover:bg-opacity-70"
               key={x.name}
               onClick={() => connect(x)}
             >
-              Connect to MetaMask
+              Connect
             </button>
           ))}
           {error && <div>{error?.message ?? "Failed to connect"}</div>}
@@ -24,12 +28,11 @@ export const WalletSelector = () => {
         <div className="flex items-center">
           {" "}
           <button
-            className="border border-black rounded-lg px-2 py-1"
+            className="rounded-lg bg-[#64c64e] px-2 py-1 hover:bg-opacity-70"
             onClick={() => [disconnect()]}
           >
-            Disconnect
+            {accountData?.ens?.name ?? truncateHash(accountData?.address)}
           </button>
-          <div> {accountData?.ens?.name ?? accountData?.address} </div>
         </div>
       )}
     </div>

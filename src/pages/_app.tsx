@@ -5,6 +5,7 @@ import { WagmiProvider, chain, defaultChains } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { baseWagmiProvider } from "lib/wagmi";
 import { useApollo } from "lib/apollo/client";
+import { ThemeProvider } from "next-themes";
 
 import "../styles/globals.css";
 
@@ -34,7 +35,9 @@ const App: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <ApolloProvider client={apolloClient}>
       <WagmiProvider provider={baseWagmiProvider} connectors={connectors}>
-        <Component {...pageProps} />
+        <ThemeProvider attribute="class">
+          <Component {...pageProps} />
+        </ThemeProvider>
       </WagmiProvider>
     </ApolloProvider>
   );

@@ -13,9 +13,9 @@ export const NetworkSelector = () => {
       <div>
         <Menu as="div" className="relative inline-block text-left">
           <div>
-            <Menu.Button className="border border-black rounded-lg px-2 py-1">
+            <Menu.Button className="rounded-lg border border-black px-2 py-1">
               <div className="flex items-center">
-                Switch Network
+                {networkData.chain.name}
                 <ChevronDownIcon
                   className="-mr-1 ml-2 h-5 w-5"
                   aria-hidden="true"
@@ -33,12 +33,16 @@ export const NetworkSelector = () => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="origin-bottom-right text-black w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="flex flex-col mt-2 ">
+            <Menu.Items className="absolute right-0 mt-2 w-44 rounded-md bg-white text-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-600 dark:text-white">
+              <div className="my-2 flex flex-col">
                 {switchNetwork &&
                   networkData.chains.map((x) =>
                     x.id === networkData.chain?.id ? null : (
-                      <button key={x.id} onClick={() => switchNetwork(x.id)}>
+                      <button
+                        className="mx-1 rounded-sm bg-opacity-80 hover:bg-[#64c64e]"
+                        key={x.id}
+                        onClick={() => switchNetwork(x.id)}
+                      >
                         {x.name}
                       </button>
                     )
