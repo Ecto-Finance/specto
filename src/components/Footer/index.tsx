@@ -26,13 +26,28 @@ export const Footer = () => {
         </div>
 
         <div className="flex items-center space-x-4 text-center">
-          <a href="https://twitter.com/EctoXYZ">
+          <a
+            className="hover:opacity-70"
+            href="https://twitter.com/EctoXYZ"
+            target="_blank"
+            rel="noreferrer"
+          >
             <Image src="/images/twitter.svg" alt="" width={30} height={30} />
           </a>
-          <a href="https://github.com/Ecto-Finance">
+          <a
+            className="hover:opacity-70"
+            href="https://github.com/Ecto-Finance"
+            target="_blank"
+            rel="noreferrer"
+          >
             <Image src="/images/github.svg" alt="" width={30} height={30} />
           </a>
-          <a href="https://discord.com/invite/4FTahmYnRm">
+          <a
+            className="hover:opacity-70"
+            href="https://discord.com/invite/4FTahmYnRm"
+            target="_blank"
+            rel="noreferrer"
+          >
             <Image src="/images/discord.svg" alt="" width={30} height={30} />
           </a>
         </div>

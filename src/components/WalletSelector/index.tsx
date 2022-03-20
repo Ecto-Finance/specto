@@ -26,7 +26,6 @@ export const WalletSelector = () => {
         </div>
       ) : (
         <div className="flex items-center">
-          {" "}
           <button
             className="rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70"
             onClick={() => [disconnect()]}
