@@ -15,7 +15,7 @@ export const WalletSelector = () => {
         <div>
           {data.connectors.map((x) => (
             <button
-              className="rounded-lg bg-[#64c64e] px-2 py-1 hover:bg-opacity-70"
+              className="rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70"
               key={x.name}
               onClick={() => connect(x)}
             >
@@ -26,9 +26,8 @@ export const WalletSelector = () => {
         </div>
       ) : (
         <div className="flex items-center">
-          {" "}
           <button
-            className="rounded-lg bg-[#64c64e] px-2 py-1 hover:bg-opacity-70"
+            className="rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70"
             onClick={() => [disconnect()]}
           >
             {accountData?.ens?.name ?? truncateHash(accountData?.address)}
