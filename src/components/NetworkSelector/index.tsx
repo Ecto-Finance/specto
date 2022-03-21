@@ -39,7 +39,7 @@ export const NetworkSelector = () => {
                   networkData.chains.map((x) =>
                     x.id === networkData.chain?.id ? null : (
                       <button
-                        className="mx-1 rounded-sm bg-opacity-80 hover:bg-[#64c64e]"
+                        className="mx-1 rounded-sm bg-opacity-80 hover:bg-primary-green"
                         key={x.id}
                         onClick={() => switchNetwork(x.id)}
                       >
