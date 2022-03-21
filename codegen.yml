@@ -1,6 +1,6 @@
 overwrite: true
 # TODO add GraphQL API endpoint
-# schema: ""
+schema: "https://api-mumbai.lens.dev/graphql"
 documents: "src/lib/graphql/**/*.{ts,graphql}"
 generates:
   src/generated/graphql.tsx:

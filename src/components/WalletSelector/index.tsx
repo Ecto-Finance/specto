@@ -1,4 +1,5 @@
-import React from "react";
+import { Login } from "./Login";
+import React, { useEffect } from "react";
 import { useConnect, useAccount } from "wagmi";
 
 export const WalletSelector = () => {
@@ -8,6 +9,10 @@ export const WalletSelector = () => {
   function truncateHash(hash: string, length = 38) {
     return hash.replace(hash.substring(4, length), "..");
   }
+
+  useEffect(() => {
+    console.log(accountData);
+  }, [accountData]);
 
   return (
     <div className="">
@@ -25,7 +30,10 @@ export const WalletSelector = () => {
           {error && <div>{error?.message ?? "Failed to connect"}</div>}
         </div>
       ) : (
-        <div className="flex items-center">
+        <div className="flex items-center space-x-2">
+          <div>
+            <Login address={accountData?.address} />
+          </div>
           <button
             className="rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70"
             onClick={() => [disconnect()]}
