@@ -36,7 +36,7 @@ export const Footer = () => {
           </a>
           <a
             className="hover:opacity-70"
-            href="https://github.com/Ecto-Finance"
+            href="https://github.com/Ecto-Finance/specto"
             target="_blank"
             rel="noreferrer"
           >
