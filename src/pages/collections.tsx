@@ -10,7 +10,7 @@ const Collections: React.FC = () => (
   <div className="h-screen w-full justify-between bg-primary-light text-black dark:bg-primary-dark dark:text-white">
     <Head>
       <title>Collections</title>
-      <meta name="description" content="Ecto Marketplace Collections Page" />
+      <meta name="description" content="Specto Collections Page" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <Header />

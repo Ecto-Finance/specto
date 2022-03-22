@@ -10,7 +10,7 @@ const Profile: React.FC = () => (
   <div className="h-screen w-full justify-between bg-primary-light text-black dark:bg-primary-dark dark:text-white">
     <Head>
       <title>Profile</title>
-      <meta name="description" content="Ecto Marketplace Profile Page" />
+      <meta name="description" content="Specto Profile Page" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <Header />
