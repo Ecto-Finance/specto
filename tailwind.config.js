@@ -8,10 +8,14 @@ module.exports = {
     extend: {
       colors: {
         "primary-dark": "#272727",
+        "secondary-dark": "#1c1c1c",
         "primary-light": "#dddddd",
         "primary-green": "#64c64e",
       },
     },
   },
-  plugins: [require("prettier-plugin-tailwindcss")],
+  plugins: [
+    require("prettier-plugin-tailwindcss"),
+    require("@tailwindcss/forms"),
+  ],
 };
