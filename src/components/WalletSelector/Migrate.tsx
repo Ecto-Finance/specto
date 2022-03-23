@@ -2,6 +2,8 @@ import { useEffect, Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
 
+import { OPENSEA_API_KEY } from "lib/config/env";
+
 export const Migrate = () => {
   const [collections, setCollections] = useState({});
   const [colAddress, setColAddress] = useState("");
@@ -18,7 +20,7 @@ export const Migrate = () => {
   const findCollection = (contractAddress: string) => {
     const options = {
       method: "GET",
-      headers: { "X-API-KEY": "***REMOVED***" },
+      headers: { "X-API-KEY": OPENSEA_API_KEY },
     };
 
     fetch(

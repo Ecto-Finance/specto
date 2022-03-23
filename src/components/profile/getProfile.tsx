@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-
-import Collections from "pages/collections";
 import { useEffect, useState } from "react";
+
+import { OPENSEA_API_KEY } from "lib/config/env";
 
 export const Profiles = () => {
   const [collection, setCollections] = useState({});
@@ -10,7 +10,7 @@ export const Profiles = () => {
   const findCollection = () => {
     const options = {
       method: "GET",
-      headers: { "X-API-KEY": "***REMOVED***" },
+      headers: { "X-API-KEY": OPENSEA_API_KEY },
     };
 
     fetch(
