@@ -5,6 +5,7 @@ import {
   NormalizedCacheObject,
   from,
 } from "@apollo/client";
+import { getAuthenticationToken } from "../../lib/lens/state";
 
 import { errorLink, httpLink } from "lib/apollo/links";
 

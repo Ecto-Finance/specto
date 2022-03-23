@@ -1,5 +1,6 @@
 import { Footer } from "components/Footer";
 import { Header } from "components/Header";
+import { Profiles } from "components/profile/getProfile";
 import Head from "next/head";
 import React from "react";
 
@@ -17,6 +18,7 @@ const Profile: React.FC = () => (
     <div className="flex items-center justify-center">
       Main Section for Profile Page
     </div>
+    <Profiles />
     <Footer />
   </div>
 );

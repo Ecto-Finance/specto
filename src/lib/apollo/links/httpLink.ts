@@ -1,12 +1,12 @@
 import { createHttpLink } from "@apollo/client";
 
-import { API_BASE_URL } from "lib/config/env";
+//import { API_BASE_URL } from "lib/config/env";
 
 /**
  * Isomorphic GraphQL HTTP API link.
  */
 const httpLink = createHttpLink({
-  uri: API_BASE_URL,
+  uri: "https://api-mumbai.lens.dev/",
   credentials: "same-origin",
 });
 
