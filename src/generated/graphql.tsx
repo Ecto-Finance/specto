@@ -2095,6 +2095,18 @@ export type AuthenticateMutationVariables = Exact<{
 
 export type AuthenticateMutation = { __typename?: 'Mutation', authenticate: { __typename?: 'AuthenticationResult', accessToken: any, refreshToken: any } };
 
+export type ChallengeQueryVariables = Exact<{
+  request: ChallengeRequest;
+}>;
+
+
+export type ChallengeQuery = { __typename?: 'Query', challenge: { __typename?: 'AuthChallengeResult', text: string } };
+
+export type PingQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PingQuery = { __typename?: 'Query', ping: string };
+
 export type ProfilesQueryVariables = Exact<{
   request: ProfileQueryRequest;
 }>;
@@ -2137,6 +2149,73 @@ export function useAuthenticateMutation(baseOptions?: Apollo.MutationHookOptions
 export type AuthenticateMutationHookResult = ReturnType<typeof useAuthenticateMutation>;
 export type AuthenticateMutationResult = Apollo.MutationResult<AuthenticateMutation>;
 export type AuthenticateMutationOptions = Apollo.BaseMutationOptions<AuthenticateMutation, AuthenticateMutationVariables>;
+export const ChallengeDocument = gql`
+    query Challenge($request: ChallengeRequest!) {
+  challenge(request: $request) {
+    text
+  }
+}
+    `;
+
+/**
+ * __useChallengeQuery__
+ *
+ * To run a query within a React component, call `useChallengeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useChallengeQuery(baseOptions: Apollo.QueryHookOptions<ChallengeQuery, ChallengeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ChallengeQuery, ChallengeQueryVariables>(ChallengeDocument, options);
+      }
+export function useChallengeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChallengeQuery, ChallengeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ChallengeQuery, ChallengeQueryVariables>(ChallengeDocument, options);
+        }
+export type ChallengeQueryHookResult = ReturnType<typeof useChallengeQuery>;
+export type ChallengeLazyQueryHookResult = ReturnType<typeof useChallengeLazyQuery>;
+export type ChallengeQueryResult = Apollo.QueryResult<ChallengeQuery, ChallengeQueryVariables>;
+export const PingDocument = gql`
+    query Ping {
+  ping
+}
+    `;
+
+/**
+ * __usePingQuery__
+ *
+ * To run a query within a React component, call `usePingQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePingQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePingQuery(baseOptions?: Apollo.QueryHookOptions<PingQuery, PingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PingQuery, PingQueryVariables>(PingDocument, options);
+      }
+export function usePingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PingQuery, PingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PingQuery, PingQueryVariables>(PingDocument, options);
+        }
+export type PingQueryHookResult = ReturnType<typeof usePingQuery>;
+export type PingLazyQueryHookResult = ReturnType<typeof usePingLazyQuery>;
+export type PingQueryResult = Apollo.QueryResult<PingQuery, PingQueryVariables>;
 export const ProfilesDocument = gql`
     query Profiles($request: ProfileQueryRequest!) {
   profiles(request: $request) {
