@@ -11,7 +11,7 @@ import "../styles/globals.css";
 
 // Chains for connectors to support
 const chains = defaultChains;
-const defaultChain = chain.mainnet;
+const defaultChain = chain.polygonTestnetMumbai;
 
 // Set up connectors
 const connectors = ({ chainId }) => {
