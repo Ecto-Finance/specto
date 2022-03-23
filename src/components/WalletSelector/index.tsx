@@ -1,5 +1,4 @@
-import { Login } from "./Login";
-import React, { useEffect } from "react";
+import React from "react";
 import { useConnect, useAccount } from "wagmi";
 import { Migrate } from "./Migrate";
 
@@ -10,10 +9,6 @@ export const WalletSelector = () => {
   function truncateHash(hash: string, length = 38) {
     return hash.replace(hash.substring(4, length), "..");
   }
-
-  useEffect(() => {
-    console.log(accountData);
-  }, [accountData]);
 
   return (
     <div className="">
@@ -32,9 +27,7 @@ export const WalletSelector = () => {
         </div>
       ) : (
         <div className="flex items-center space-x-2">
-          <div>
-            <Login address={accountData?.address} />
-          </div>
+          <Migrate />
           <button
             className="rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70"
             onClick={() => [disconnect()]}

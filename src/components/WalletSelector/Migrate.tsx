@@ -42,10 +42,6 @@ export const Migrate = () => {
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    console.log(colAddress);
-  }, [colAddress]);
-
   return (
     <>
       <div className="flex items-center justify-center">
