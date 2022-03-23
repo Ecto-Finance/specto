@@ -1,0 +1,17 @@
+query Search {
+  search(request: { query: "h", type: PROFILE, limit: 50 }) {
+    ... on ProfileSearchResult {
+      items {
+        id
+        name
+        handle
+        website
+      }
+      pageInfo {
+        prev
+        totalCount
+        next
+      }
+    }
+  }
+}

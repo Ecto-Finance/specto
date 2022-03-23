@@ -1,6 +1,7 @@
 import { Login } from "./Login";
 import React, { useEffect } from "react";
 import { useConnect, useAccount } from "wagmi";
+import { Migrate } from "./Migrate";
 
 export const WalletSelector = () => {
   const [{ data: accountData }, disconnect] = useAccount({ fetchEns: true });
