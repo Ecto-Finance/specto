@@ -67,6 +67,7 @@ export const ProfileSelector = ({ profile, setProfile }: Props) => {
     console.log(collection);
   }, [collection]);
 
+  //adddddd
   const findGhouls = () => {
     const options = {
       method: "GET",
