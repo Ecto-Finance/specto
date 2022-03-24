@@ -95,7 +95,7 @@ export const getProfilesRequest = (request) => {
 export const getProfiles = async (address) => {
   console.log("profiles of: address", address);
 
-  const request = { ownedBy: "0x5905232b8ea73f1F2FCBE4297573733bf41b666d" };
+  const request = { ownedBy: address };
 
   const profilesFromProfileIds = await getProfilesRequest(request);
 
