@@ -93,20 +93,6 @@ export type ApprovedModuleAllowanceAmountRequest = {
   referenceModules: Array<ReferenceModules>;
 };
 
-export type AttachRequest = {
-  /** mimetype of the file to push */
-  mimeType: Scalars['MimeType'];
-};
-
-/** The response to upload the attached file */
-export type AttachResults = {
-  __typename?: 'AttachResults';
-  /** Name of the file once is uploaded */
-  key: Scalars['String'];
-  /** Signed url to push the file */
-  signedUrl: Scalars['String'];
-};
-
 /** The auth challenge result */
 export type AuthChallengeResult = {
   __typename?: 'AuthChallengeResult';
@@ -752,6 +738,10 @@ export type Erc20Amount = {
 export type ExplorePublicationRequest = {
   cursor?: InputMaybe<Scalars['Cursor']>;
   limit?: InputMaybe<Scalars['LimitScalar']>;
+  /** If you want the randomizer off (default on) */
+  noRandomize?: InputMaybe<Scalars['Boolean']>;
+  /** The publication types you want to query */
+  publicationTypes?: InputMaybe<Array<PublicationTypes>>;
   sortCriteria: PublicationSortCriteria;
   /** The App Id */
   sources?: InputMaybe<Array<Scalars['Sources']>>;
@@ -1167,7 +1157,6 @@ export type ModuleInfo = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  attachFile: AttachResults;
   authenticate: AuthenticationResult;
   claim: RelayResult;
   createCollectTypedData: CreateCollectBroadcastItemResult;
@@ -1185,11 +1174,6 @@ export type Mutation = {
   refresh: AuthenticationResult;
   reportPublication?: Maybe<Scalars['Void']>;
   updateProfile: Profile;
-};
-
-
-export type MutationAttachFileArgs = {
-  request: AttachRequest;
 };
 
 
@@ -1480,6 +1464,13 @@ export type PaginatedTimelineResult = {
   pageInfo: PaginatedResultInfo;
 };
 
+/** The paginated wallet result */
+export type PaginatedWhoCollectedResult = {
+  __typename?: 'PaginatedWhoCollectedResult';
+  items: Array<Wallet>;
+  pageInfo: PaginatedResultInfo;
+};
+
 export type PendingApprovalFollowsRequest = {
   cursor?: InputMaybe<Scalars['Cursor']>;
   limit?: InputMaybe<Scalars['LimitScalar']>;
@@ -1680,6 +1671,7 @@ export type PublicationSearchResultItem = Comment | Post;
 
 /** Publication sort criteria */
 export enum PublicationSortCriteria {
+  Latest = 'LATEST',
   TopCollected = 'TOP_COLLECTED',
   TopCommented = 'TOP_COMMENTED'
 }
@@ -1751,6 +1743,7 @@ export type Query = {
   search: SearchResult;
   timeline: PaginatedTimelineResult;
   verify: Scalars['Boolean'];
+  whoCollectedPublication: PaginatedWhoCollectedResult;
 };
 
 
@@ -1871,6 +1864,11 @@ export type QueryTimelineArgs = {
 
 export type QueryVerifyArgs = {
   request: VerifyRequest;
+};
+
+
+export type QueryWhoCollectedPublicationArgs = {
+  request: WhoCollectedPublicationRequest;
 };
 
 export type ReferenceModule = FollowOnlyReferenceModuleSettings;
@@ -2086,6 +2084,13 @@ export type Wallet = {
   address: Scalars['EthereumAddress'];
   /** The default profile for the wallet for now it is just their first profile, this will be the default profile they picked soon enough */
   defaultProfile?: Maybe<Profile>;
+};
+
+export type WhoCollectedPublicationRequest = {
+  cursor?: InputMaybe<Scalars['Cursor']>;
+  limit?: InputMaybe<Scalars['LimitScalar']>;
+  /** Internal publication id */
+  publicationId: Scalars['InternalPublicationId'];
 };
 
 export type AuthenticateMutationVariables = Exact<{

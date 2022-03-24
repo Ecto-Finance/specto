@@ -2,41 +2,40 @@
 import { generateChallenge } from "./generate-challenge";
 import { authenticate } from "./authenticate";
 import { chain, useSignMessage } from "wagmi";
-import { refreshAuth } from "./refresh";
-import {
-  getAuthenticationToken,
-  setAuthenticationToken,
-} from "../../lib/lens/state";
-import { Logout } from "./Logout";
 import { InjectedConnector } from "wagmi/connectors/injected";
-import { useAccount, useConnect, defaultChains, defaultL2Chains } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 import React from "react";
+import { prettyJSON } from "lib/lens/helpers";
 
 export const Login = ({ address }) => {
-  const [{ data: accountData }, disconnect] = useAccount({ fetchEns: true });
+  const [{ data: accountData }] = useAccount();
   const [{}, connect] = useConnect();
+  const [{ data, error, loading }, signMessage] = useSignMessage();
+  const connector = new InjectedConnector({
+    chains: [chain.arbitrumOne, chain.mainnet, chain.polygonTestnetMumbai],
+  });
+
   const [state, setState] = React.useState<{
     address?: string;
     error?: Error;
     loading?: boolean;
   }>({});
-  const connector = new InjectedConnector({
-    chains: [chain.arbitrumOne, chain.mainnet, chain.polygonTestnetMumbai],
-  });
-  const [{ data, error, loading }, signMessage] = useSignMessage();
 
   const signIn = React.useCallback(async () => {
     try {
+      //generate-challenge
       const challengeResponse = await generateChallenge(address);
-      console.log(challengeResponse);
+      prettyJSON("AuthChallengeResult: ...", challengeResponse.data.challenge);
+
+      //signMessage
       const signature = await signMessage({
         message: challengeResponse.data.challenge.text,
       });
-      console.log(signature);
+      prettyJSON("Signature: ...", signature.data);
+
+      //authenticate
       const accessTokens = await authenticate(address, signature.data);
-      console.log(accessTokens);
-      //console.log(profData);
-      console.log(accessTokens.data.authenticate.refreshToken);
+      prettyJSON("login: ...", accessTokens.data);
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error, loading: false }));
     }
@@ -65,14 +64,14 @@ export const Login = ({ address }) => {
       {accountData ? (
         <div className="flex">
           {" "}
-          <div className="ml-2 flex rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70">
+          <div className=" flex rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70">
             {accountData?.ens?.name ??
               accountData?.address.slice(0, 6) +
                 "..." +
                 accountData?.address.slice(38, 42)}
           </div>
           <button
-            className="rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70"
+            className="ml-2 rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70"
             onClick={() => signIn()}
           >
             Sign In
@@ -82,13 +81,5 @@ export const Login = ({ address }) => {
         ""
       )}
     </div>
-
-    /*  {profileData != [] ? (
-        <div className="flex flex-col">
-          {profileData.map((profile: any) => {
-            <div>key={profile.id}>{profile.handle}</div>
-          })}
-          </div>
-      )} */
   );
 };
