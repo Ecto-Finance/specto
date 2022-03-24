@@ -21,7 +21,7 @@ export const ProfileSelector = ({ profile, setProfile }: Props) => {
   const [recepient, setRecepient] = useState<string>("");
   const [{ data: accountData }] = useAccount({ fetchEns: true });
   const [collection, setCollections] = useState({});
-  const zeroAddress = ethers.constants.AddressZero; // ??
+  const zeroAddress = ethers.constants.AddressZero;
   let [isOpen, setIsOpen] = useState(false);
   const profiles = [
     {
