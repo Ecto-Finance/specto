@@ -13,4 +13,5 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 // web3
 export const ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
 export const INFURA_ID = process.env.NEXT_PUBLIC_INFURA_ID;
+export const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 export const OPENSEA_API_KEY = process.env.NEXT_PUBLIC_OPENSEA_API_KEY;

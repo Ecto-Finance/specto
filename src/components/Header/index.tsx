@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { NetworkSelector } from "../NetworkSelector";
 import { ThemeSwitcher } from "../ThemeSwitcher";
-import { Login } from "components/Auth/Login";
 import { useAccount } from "wagmi";
+import WalletSelector from "components/WalletSelector";
 
 export const Header = () => {
   const [{ data: accountData }] = useAccount();
@@ -17,7 +17,7 @@ export const Header = () => {
       <div className="flex items-center space-x-2">
         <ThemeSwitcher />
         <NetworkSelector />
-        <Login address={accountData?.address} />
+        <WalletSelector />
       </div>
     </div>
   );
