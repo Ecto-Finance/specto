@@ -9,7 +9,7 @@ export const Header = () => {
     <div className="sticky top-0 mx-auto flex w-full max-w-7xl justify-between bg-primary-light p-4 dark:bg-primary-dark">
       <div className="flex items-center justify-center space-x-2">
         <div>
-          <button className="hidden text-lg sm:inline-flex">
+          <button className=" text-lg sm:inline-flex">
             <Link href="/" passHref>
               <Image
                 src="/images/ecto-logo.png"
