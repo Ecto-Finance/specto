@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Footer } from "components/Footer";
 import { Header } from "components/Header";
-import { ChevronLeftIcon, LinkIcon } from "@heroicons/react/solid";
+import { ChevronLeftIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 
 export const getStaticPaths = async () => {
