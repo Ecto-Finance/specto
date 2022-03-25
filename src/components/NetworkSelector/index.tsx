@@ -33,7 +33,7 @@ export const NetworkSelector = () => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 mt-2 w-44 rounded-md bg-white text-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-600 dark:text-white">
+            <Menu.Items className="absolute right-0 w-44 rounded-md bg-white  text-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-600 dark:text-white">
               <div className="my-2 flex flex-col">
                 {switchNetwork &&
                   networkData.chains.map((x) =>

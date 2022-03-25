@@ -32,26 +32,17 @@ export const getStaticProps = async (context) => {
 
 const Details = ({ profile }) => {
   return (
-    <>
+    <div className="h-screen bg-primary-light p-2 dark:bg-primary-dark">
       <Header />
-      <div className="mt-7 items-center justify-center">
-        <img src="/images/lens.jpg" alt="" className="mx-auto w-40" />
-        <div className="mx-auto mt-7 flex max-w-5xl justify-between space-x-10 p-12 text-center">
-          <div className="">
-            <p className="text-2xl"> {profile.name}</p>
-            <p> *HANDLE*</p>
-            <p>id#</p>
-            <p> {profile.email}</p>
-            <p> {profile.website}</p>
-            <p> {profile.address.city}</p>
-            {/* hardcoded*/}
-            <a className="mt-1 flex" href="">
-              <img src="/images/twitter.svg" alt="" className="mx-auto h-4" />
-            </a>
-          </div>
-          <div>
-            <p className="text-gray-400">
-              {" "}
+      <div className="mt-2 items-center  justify-center">
+        <img src="/images/lens.jpg" alt="" className=" mx-auto w-52" />
+        <div className=" text-center">
+          <p className="mt-8 mb-4 text-4xl"> {profile.name}</p>
+          <p> {profile.email}</p>
+          <p> {profile.website}</p>
+          <p className=""> {profile.address.city}</p>
+          <div className="mx-auto mt-8 max-w-3xl">
+            <span className="text-gray-400">
               Lorem Ipsum is simply dummy text of the printing and typesetting
               industry. Lorem Ipsum has been the industrys standard dummy text
               ever since the 1500s, when an unknown printer took a galley of
@@ -62,136 +53,29 @@ const Details = ({ profile }) => {
               containing Lorem Ipsum passages, and more recently with desktop
               publishing software like Aldus PageMaker including versions of
               Lorem Ipsum.
-            </p>
+            </span>
           </div>
-        </div>
-        <div className="mt-11 sm:flex sm:justify-center">
-          <div className="p-2 shadow-md">
-            <div className="">
-              <div className="flex flex-col">
-                <div className="w-25 flex space-x-8">
-                  <div className="">
-                    <div className="text-sm uppercase text-gray-400">
-                      Follows:
-                    </div>
-                    <div className="mt-1">
-                      <div className="flex items-center space-x-2">
-                        <div className="text-2xl">4</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+
+          <div className="mx-auto mt-8 mb-24 max-w-2xl justify-between text-center text-sm md:flex">
+            <div className="text-gray-400">Follows:</div>
+            <span className="text-primary-green">4</span>
+            <div className="text-gray-400">Following:</div>
+            <span className="text-primary-green">1</span>
+            <div className="text-gray-400">Posts:</div>
+            <span className="text-primary-green">4</span>
+            <div className="text-gray-400">Comments:</div>
+            <span className="text-primary-green">3</span>
+            <div className="text-gray-400">Mirrors:</div>
+            <span className="text-primary-green">3</span>
+            <div className="text-gray-400">Publications: </div>
+            <span className="text-primary-green">7</span>
+            <div className="text-gray-400">Collects:</div>
+            <span className="text-primary-green">0</span>
           </div>
-          <div className="p-2 shadow-md">
-            <div className="">
-              <div className="flex flex-col">
-                <div className="w-25 flex space-x-8">
-                  <div className="">
-                    <div className="text-sm uppercase text-gray-400">
-                      Following:
-                    </div>
-                    <div className="mt-1">
-                      <div className="flex items-center space-x-2">
-                        <div className="text-2xl">1</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="p-2 shadow-md">
-            <div className="">
-              <div className="flex flex-col">
-                <div className="w-25 flex space-x-8">
-                  <div className="">
-                    <div className="text-sm uppercase text-gray-400">
-                      Posts:
-                    </div>
-                    <div className="mt-1">
-                      <div className="flex items-center space-x-2">
-                        <div className="text-2xl">7</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="p-2 shadow-md">
-            <div className="">
-              <div className="flex flex-col">
-                <div className="w-25 flex space-x-8">
-                  <div className="">
-                    <div className="text-sm uppercase text-gray-400">
-                      Comments:
-                    </div>
-                    <div className="mt-1">
-                      <div className="flex items-center space-x-2">
-                        <div className="text-2xl">0</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="p-2 shadow-md">
-            <div className="">
-              <div className="flex flex-col">
-                <div className="w-25 flex space-x-8">
-                  <div className="">
-                    <div className="text-sm uppercase text-gray-400">
-                      Mirrors:
-                    </div>
-                    <div className="mt-1">
-                      <div className="flex items-center space-x-2">
-                        <div className="text-2xl">1</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="p-2 shadow-md">
-            <div className="">
-              <div className="flex flex-col">
-                <div className="w-25 flex space-x-8">
-                  <div className="">
-                    <div className="text-sm uppercase text-gray-400">
-                      Publications:
-                    </div>
-                    <div className="mt-1">
-                      <div className="flex items-center space-x-2">
-                        <div className="text-2xl">11</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="p-2 shadow-md">
-            <div className="flex flex-col">
-              <div className="w-25 flex space-x-8">
-                <div className="">
-                  <div className="text-sm uppercase text-gray-400">
-                    Collects:
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="text-2xl ">0</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        </div>{" "}
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

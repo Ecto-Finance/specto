@@ -1,26 +1,19 @@
 import React from "react";
+import { ThemeProvider } from "next-themes";
 import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
-import { WagmiProvider, chain, defaultChains } from "wagmi";
+import { WagmiProvider, chain } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { baseWagmiProvider } from "lib/wagmi";
 import { useApollo } from "lib/apollo/client";
-import { ThemeProvider } from "next-themes";
 
 import "../styles/globals.css";
 
-// Chains for connectors to support
-const chains = defaultChains;
-const defaultChain = chain.polygonTestnetMumbai;
-
 // Set up connectors
-const connectors = ({ chainId }) => {
-  const rpcUrl =
-    chains.find((x) => x.id === chainId)?.rpcUrls?.[0] ??
-    chain.mainnet.rpcUrls[0];
+const connectors = () => {
   return [
     new InjectedConnector({
-      chains: [chain.arbitrumOne, defaultChain, chain.polygonTestnetMumbai],
+      chains: [chain.arbitrumOne, chain.mainnet, chain.polygonTestnetMumbai],
       options: { shimDisconnect: true },
     }),
   ];
