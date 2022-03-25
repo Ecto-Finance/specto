@@ -8,7 +8,6 @@ import { useCreateProfileMutation } from "generated/graphql";
 
 export const Migrate = () => {
   const [colAddress, setColAddress] = useState("");
-  const [ipfsHash, setIpfsHash] = useState("");
   const [colName, setColName] = useState("");
   let [isOpen, setIsOpen] = useState(false);
 
@@ -34,7 +33,7 @@ export const Migrate = () => {
     )
       .then((response) => response.json())
       .then((response) => {
-        setColName(response.name);
+        setColName(response.name); //could be used to make handle dynamic, but someone could front run and grab for ex: lostsoulssanctuary handle already
         pinJSONToIPFS({
           pinataMetadata: {
             name: response.name,
@@ -44,16 +43,14 @@ export const Migrate = () => {
           },
         }).then((response) => {
           if (response.success == true) {
-            setIpfsHash(response.ipfsHash);
-            // TODO
-            // createProfile(colName, `ipfs://${response.ipfsHash}`).then(
-            //   (response) => console.log(response)
-            // );
-
             createProfile({
-              // TODO make dynamic handle
-              variables: { request: { handle: "lstest" } },
-            });
+              variables: {
+                request: {
+                  handle: "hobbestesting3", //Need to make dynamic + lowercase and also unique
+                  profilePictureUri: `ipfs://${response.ipfsHash}`,
+                },
+              },
+            }).then((response) => console.log(response));
           }
         });
       })
@@ -68,14 +65,6 @@ export const Migrate = () => {
     findCollection(contractAddress);
     setIsOpen(false);
   };
-
-  useEffect(() => {
-    console.log(ipfsHash);
-  }, [ipfsHash]);
-
-  useEffect(() => {
-    console.log(colName);
-  }, [colName]);
 
   return (
     <>

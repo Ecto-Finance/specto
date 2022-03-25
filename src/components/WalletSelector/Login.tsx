@@ -1,20 +1,34 @@
-import { generateChallenge } from "./generate-challenge";
-import { authenticate } from "./authenticate";
 import { useSignMessage } from "wagmi";
 import { useState } from "react";
 import { Migrate } from "./Migrate";
-import { setAuthenticationToken, getAuthenticationToken } from "lib/lens/state";
+import { setAuthenticationToken } from "lib/lens/state";
+import { useAuthenticateMutation, useChallengeQuery } from "generated/graphql";
 
 export const Login = ({ address }) => {
-  const [{ data, error, loading }, signMessage] = useSignMessage();
+  const [, signMessage] = useSignMessage();
   const [accessToken, setAccessToken] = useState(false);
+  const [authenticateMutation] = useAuthenticateMutation();
+  const { data, loading, error } = useChallengeQuery({
+    variables: {
+      request: {
+        address,
+      },
+    },
+  });
 
   const pleaseLogin = async () => {
-    const challengeResponse = await generateChallenge(address);
     const signature = await signMessage({
-      message: challengeResponse.data.challenge.text,
+      message: data.challenge.text,
     });
-    const accessTokens = await authenticate(address, signature.data);
+    const accessTokens = await authenticateMutation({
+      variables: {
+        request: {
+          address,
+          signature: signature.data,
+        },
+      },
+    });
+    console.log(accessTokens);
     setAuthenticationToken(accessTokens.data.authenticate.accessToken);
     setAccessToken(true);
   };
