@@ -93,6 +93,20 @@ export type ApprovedModuleAllowanceAmountRequest = {
   referenceModules: Array<ReferenceModules>;
 };
 
+export type AttachRequest = {
+  /** mimetype of the file to push */
+  mimeType: Scalars['MimeType'];
+};
+
+/** The response to upload the attached file */
+export type AttachResults = {
+  __typename?: 'AttachResults';
+  /** Name of the file once is uploaded */
+  key: Scalars['String'];
+  /** Signed url to push the file */
+  signedUrl: Scalars['String'];
+};
+
 /** The auth challenge result */
 export type AuthChallengeResult = {
   __typename?: 'AuthChallengeResult';
@@ -169,6 +183,8 @@ export type Comment = {
   appId?: Maybe<Scalars['Sources']>;
   /** The collect module */
   collectModule: CollectModule;
+  /** The contract address for the collect nft.. if its null it means nobody collected yet as it lazy deployed */
+  collectNftAddress?: Maybe<Scalars['ContractAddress']>;
   /** Who collected it, this is used for timeline results and like this for better caching for the client */
   collectedBy?: Maybe<Wallet>;
   /** Which comment this points to if its null the pointer too deep so do another query to find it out */
@@ -1114,6 +1130,8 @@ export type Mirror = {
   appId?: Maybe<Scalars['Sources']>;
   /** The collect module */
   collectModule: CollectModule;
+  /** The contract address for the collect nft.. if its null it means nobody collected yet as it lazy deployed */
+  collectNftAddress?: Maybe<Scalars['ContractAddress']>;
   /** The date the post was created on */
   createdAt: Scalars['DateTime'];
   /** The internal publication id */
@@ -1157,6 +1175,7 @@ export type ModuleInfo = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  attachFile: AttachResults;
   authenticate: AuthenticationResult;
   claim: RelayResult;
   createCollectTypedData: CreateCollectBroadcastItemResult;
@@ -1174,6 +1193,11 @@ export type Mutation = {
   refresh: AuthenticationResult;
   reportPublication?: Maybe<Scalars['Void']>;
   updateProfile: Profile;
+};
+
+
+export type MutationAttachFileArgs = {
+  request: AttachRequest;
 };
 
 
@@ -1490,6 +1514,8 @@ export type Post = {
   appId?: Maybe<Scalars['Sources']>;
   /** The collect module */
   collectModule: CollectModule;
+  /** The contract address for the collect nft.. if its null it means nobody collected yet as it lazy deployed */
+  collectNftAddress?: Maybe<Scalars['ContractAddress']>;
   /** Who collected it, this is used for timeline results and like this for better caching for the client */
   collectedBy?: Maybe<Wallet>;
   /** The date the post was created on */

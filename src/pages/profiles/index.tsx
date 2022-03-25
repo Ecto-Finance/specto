@@ -25,7 +25,6 @@ export const getStaticProps = async () => {
 
 const Profile = ({ profiles }) => {
   const [message, setMessage] = React.useState("");
-  // const [value, setValue] = useState<string>("");
   const [{ data: accountData }] = useAccount({ fetchEns: true });
 
   return (
@@ -37,15 +36,6 @@ const Profile = ({ profiles }) => {
       </Head>
       <Header />
       <div className="text-center">
-        {/*
-            <input
-              className="border-contrast rounded border px-4 py-1.5 text-black"
-              id="recepient"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="search by something"
-            />
-          */}
         <button
           className="ml-2 rounded-lg bg-primary-green px-4 py-2 hover:bg-opacity-70"
           onClick={async () =>
@@ -54,9 +44,9 @@ const Profile = ({ profiles }) => {
         >
           Get My Profiles
         </button>
-        <Menu as="div" className="relative inline-block text-left">
-          <Menu.Button className="rounded-lg px-2 py-1">
-            <div className="flex rounded-lg bg-primary-green px-2 py-2 hover:bg-opacity-70">
+        <Menu as="div" className=" inline-block text-left">
+          <Menu.Button className="z-50 rounded-lg px-2 py-1">
+            <div className=" flex rounded-lg bg-primary-green px-2 py-2 hover:bg-opacity-70">
               <div className="ml-2"> All Profiles</div>
               <ChevronDownIcon
                 className="mr-1 mt-1 ml-2 flex h-5 w-5"
@@ -73,18 +63,20 @@ const Profile = ({ profiles }) => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className=" absolute mt-2 w-44 rounded-md bg-white text-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-600 dark:text-white">
-              {profiles.map((profile) => (
-                <Link href={"/profiles/" + profile.id} key={profile.id}>
-                  <a className="">
-                    <h3>{profile.name}</h3>
-                  </a>
-                </Link>
-              ))}
+            <Menu.Items className="absolute mt-2 rounded-md bg-white text-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-600 dark:text-white">
+              <div className="p-2">
+                {" "}
+                {profiles.map((profile) => (
+                  <Link href={"/profiles/" + profile.id} key={profile.id}>
+                    <a className="">
+                      <div className="space-y-2">{profile.name}</div>
+                    </a>
+                  </Link>
+                ))}
+              </div>
             </Menu.Items>
           </Transition>
         </Menu>
-        <div></div>
       </div>
       <Footer />
     </div>

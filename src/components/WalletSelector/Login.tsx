@@ -3,6 +3,7 @@ import { authenticate } from "./authenticate";
 import { useSignMessage } from "wagmi";
 import { useState } from "react";
 import { Migrate } from "./Migrate";
+import Link from "next/link";
 
 export const Login = ({ address }) => {
   const [{ data, error, loading }, signMessage] = useSignMessage();
@@ -24,12 +25,17 @@ export const Login = ({ address }) => {
       {accessToken != "" ? (
         <Migrate />
       ) : (
-        <button
-          className="rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70"
-          onClick={() => pleaseLogin()}
-        >
-          Sign In
-        </button>
+        <div className="space-x-2">
+          <button
+            className="rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70"
+            onClick={() => pleaseLogin()}
+          >
+            Sign In
+          </button>
+          <button className="rounded-lg bg-primary-green px-2 py-1 hover:bg-opacity-70">
+            <Link href="/profiles">Profiles</Link>
+          </button>
+        </div>
       )}
     </div>
   );
