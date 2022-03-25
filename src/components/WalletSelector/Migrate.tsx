@@ -1,6 +1,7 @@
 import { useEffect, Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
+import { createProfile } from "./create-profile";
 import { pinJSONToIPFS } from "lib/pinata/pinata";
 
 import { OPENSEA_API_KEY } from "lib/config/env";
@@ -42,8 +43,10 @@ export const Migrate = () => {
         }).then((response) => {
           if (response.success == true) {
             setIpfsHash(response.ipfsHash);
+            createProfile(colName, `ipfs://${response.ipfsHash}`).then(
+              (response) => console.log(response)
+            );
           }
-          //TODO: Create Profile with ColName = handle and use ipfsHash in profilePictureUri
         });
       })
       .catch((err) => console.error(err));

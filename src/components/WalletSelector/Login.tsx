@@ -3,11 +3,11 @@ import { authenticate } from "./authenticate";
 import { useSignMessage } from "wagmi";
 import { useState } from "react";
 import { Migrate } from "./Migrate";
+import { setAuthenticationToken, getAuthenticationToken } from "lib/lens/state";
 
 export const Login = ({ address }) => {
   const [{ data, error, loading }, signMessage] = useSignMessage();
-  const [accessToken, setAccessToken] = useState("");
-  const [refreshToken, setRefreshToken] = useState("");
+  const [accessToken, setAccessToken] = useState(false);
 
   const pleaseLogin = async () => {
     const challengeResponse = await generateChallenge(address);
@@ -15,13 +15,13 @@ export const Login = ({ address }) => {
       message: challengeResponse.data.challenge.text,
     });
     const accessTokens = await authenticate(address, signature.data);
-    setAccessToken(accessTokens.data.authenticate.accessToken);
-    setRefreshToken(accessTokens.data.authenticate.refreshToken);
+    setAuthenticationToken(accessTokens.data.authenticate.accessToken);
+    setAccessToken(true);
   };
 
   return (
     <div>
-      {accessToken != "" ? (
+      {accessToken ? (
         <Migrate />
       ) : (
         <div className="space-x-2">
