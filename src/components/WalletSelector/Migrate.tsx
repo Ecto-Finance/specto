@@ -1,12 +1,14 @@
 import { useEffect, Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
+import { pinJSONToIPFS } from "lib/pinata/pinata";
 
 import { OPENSEA_API_KEY } from "lib/config/env";
 
 export const Migrate = () => {
-  const [collections, setCollections] = useState({});
   const [colAddress, setColAddress] = useState("");
+  const [ipfsHash, setIpfsHash] = useState("");
+  const [colName, setColName] = useState("");
   let [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
@@ -29,8 +31,20 @@ export const Migrate = () => {
     )
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
-        setCollections(response);
+        setColName(response.name);
+        pinJSONToIPFS({
+          pinataMetadata: {
+            name: response.name,
+          },
+          pinataContent: {
+            response,
+          },
+        }).then((response) => {
+          if (response.success == true) {
+            setIpfsHash(response.ipfsHash);
+          }
+          //TODO: Create Profile with ColName = handle and use ipfsHash in profilePictureUri
+        });
       })
       .catch((err) => console.error(err));
   };
@@ -45,8 +59,12 @@ export const Migrate = () => {
   };
 
   useEffect(() => {
-    console.log(colAddress);
-  }, [colAddress]);
+    console.log(ipfsHash);
+  }, [ipfsHash]);
+
+  useEffect(() => {
+    console.log(colName);
+  }, [colName]);
 
   return (
     <>

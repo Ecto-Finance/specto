@@ -15,3 +15,5 @@ export const ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
 export const INFURA_ID = process.env.NEXT_PUBLIC_INFURA_ID;
 export const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 export const OPENSEA_API_KEY = process.env.NEXT_PUBLIC_OPENSEA_API_KEY;
+export const PINATA_API_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY;
+export const PINATA_API_SECRET = process.env.NEXT_PUBLIC_PINATA_API_SECRET;
