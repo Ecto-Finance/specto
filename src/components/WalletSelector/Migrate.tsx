@@ -1,4 +1,4 @@
-import { useEffect, Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
 import { pinJSONToIPFS } from "lib/pinata/pinata";
@@ -46,7 +46,7 @@ export const Migrate = () => {
             createProfile({
               variables: {
                 request: {
-                  handle: "hobbestesting3", //Need to make dynamic + lowercase and also unique
+                  handle: "hobbestesting4", //Need to make dynamic + lowercase and also unique
                   profilePictureUri: `ipfs://${response.ipfsHash}`,
                 },
               },
