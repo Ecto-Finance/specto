@@ -4,7 +4,6 @@ import Head from "next/head";
 import Link from "next/link";
 import { Footer } from "components/Footer";
 import { Header } from "components/Header";
-import { SearchIcon } from "@heroicons/react/solid";
 
 /**
  * Home page.
@@ -34,13 +33,12 @@ const Home = ({ profiles }) => {
         <div className="text-2xl">
           Welcome to Specto. A Lens-Protocol hackathon project.
         </div>
-        <div className="mx-auto flex w-80 items-center">
-          <div className="mt-4  flex items-center">
-            <SearchIcon className="fixed ml-3 h-5 w-5 text-gray-400" />
+        <div className="w-screen">
+          <div className="mt-4 items-center">
             <input
-              className="rounded-md border-gray-300 bg-gray-50 pl-10 text-sm text-black selection:bg-green-200 focus:border-primary-green focus:ring-primary-green"
+              className="rounded-md border-gray-400 bg-gray-50 text-sm text-black selection:bg-green-200 focus:border-primary-green focus:ring-primary-green"
               type="text"
-              placeholder="Search..."
+              placeholder="Search by name..."
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
@@ -48,7 +46,7 @@ const Home = ({ profiles }) => {
 
         <div className=" mx-auto  grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
           {profiles
-            .filter((profile) => {
+            .filter((profile: { name: string }) => {
               if (search == "") {
                 return profile;
               } else if (
@@ -64,7 +62,10 @@ const Home = ({ profiles }) => {
                     <div className="rounded-2xl border border-gray-400 ">
                       <div>
                         {" "}
-                        <div className="absolute ml-2 mt-1"> #{profile.id}</div>
+                        <div className="absolute ml-2 mt-1 dark:text-black">
+                          {" "}
+                          #{profile.id}
+                        </div>
                         <img
                           src="/images/lens.jpg"
                           alt=""

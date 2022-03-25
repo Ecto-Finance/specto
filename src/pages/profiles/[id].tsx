@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { Footer } from "components/Footer";
 import { Header } from "components/Header";
+import { ChevronLeftIcon, LinkIcon } from "@heroicons/react/solid";
+import Link from "next/link";
 
 export const getStaticPaths = async () => {
   const res = await fetch("https://jsonplaceholder.typicode.com/users");
@@ -35,9 +37,17 @@ const Details = ({ profile }) => {
     <div className="h-screen bg-primary-light p-2 dark:bg-primary-dark">
       <Header />
       <div className="mt-2 items-center justify-center">
-        <img src="/images/lens.jpg" alt="" className="mx-auto w-52" />
+        <div className="">
+          <img src="/images/lens.jpg" alt="" className="mx-auto w-52" />
+          <Link href="/" passHref>
+            <ChevronLeftIcon className="mx-auto mb-4 mt-4 w-10 cursor-pointer rounded-full border border-black text-black" />
+          </Link>
+        </div>
         <div className="text-center">
-          <p className="mt-8 mb-4 text-4xl">{profile.name}</p>
+          <div className="mb-4 text-center text-4xl">
+            {profile.name}
+            <span className="ml-4 text-2xl">#{profile.id}</span>
+          </div>
           <p>{profile.email}</p>
           <p>{profile.website}</p>
           <p>{profile.address.city}</p>
