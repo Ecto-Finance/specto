@@ -1092,9 +1092,9 @@ export type MetadataAttributeOutput = {
   /** The display type */
   displayType?: Maybe<MetadataDisplayType>;
   /** The trait type - can be anything its the name it will render so include spaces */
-  traitType: Scalars['String'];
+  traitType?: Maybe<Scalars['String']>;
   /** The value */
-  value: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 /** The metadata display types */
@@ -1212,26 +1212,31 @@ export type MutationClaimArgs = {
 
 
 export type MutationCreateCollectTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateCollectRequest;
 };
 
 
 export type MutationCreateCommentTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreatePublicCommentRequest;
 };
 
 
 export type MutationCreateFollowTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: FollowRequest;
 };
 
 
 export type MutationCreateMirrorTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateMirrorRequest;
 };
 
 
 export type MutationCreatePostTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreatePublicPostRequest;
 };
 
@@ -1242,21 +1247,25 @@ export type MutationCreateProfileArgs = {
 
 
 export type MutationCreateSetDispatcherTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: SetDispatcherRequest;
 };
 
 
 export type MutationCreateSetFollowModuleTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateSetFollowModuleRequest;
 };
 
 
 export type MutationCreateSetFollowNftUriTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateSetFollowNftUriRequest;
 };
 
 
 export type MutationCreateSetProfileImageUriTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: UpdateProfileImageRequest;
 };
 
@@ -1768,6 +1777,7 @@ export type Query = {
   recommendedProfiles: Array<Profile>;
   search: SearchResult;
   timeline: PaginatedTimelineResult;
+  userSigNonces: UserSigNonces;
   verify: Scalars['Boolean'];
   whoCollectedPublication: PaginatedWhoCollectedResult;
 };
@@ -2071,6 +2081,11 @@ export type TransactionReceipt = {
 
 export type TransactionResult = TransactionError | TransactionIndexedResult;
 
+export type TypedDataOptions = {
+  /** If you wish to override the nonce for the sig if you want to do some clever stuff in the client */
+  overrideSigNonce: Scalars['Nonce'];
+};
+
 export type UnfollowRequest = {
   profile: Scalars['ProfileId'];
 };
@@ -2099,6 +2114,11 @@ export type UpdateProfileRequest = {
   website?: InputMaybe<Scalars['Url']>;
 };
 
+export type UserSigNonces = {
+  __typename?: 'UserSigNonces';
+  lensHubOnChainSigNonce: Scalars['Nonce'];
+};
+
 /** The access request */
 export type VerifyRequest = {
   /** The access token */
@@ -2125,6 +2145,13 @@ export type AuthenticateMutationVariables = Exact<{
 
 
 export type AuthenticateMutation = { __typename?: 'Mutation', authenticate: { __typename?: 'AuthenticationResult', accessToken: any, refreshToken: any } };
+
+export type CreateProfileMutationVariables = Exact<{
+  request: CreateProfileRequest;
+}>;
+
+
+export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename: 'RelayError', reason: RelayErrorReasons } | { __typename: 'RelayerResult', txHash: any } };
 
 export type ChallengeQueryVariables = Exact<{
   request: ChallengeRequest;
@@ -2180,6 +2207,45 @@ export function useAuthenticateMutation(baseOptions?: Apollo.MutationHookOptions
 export type AuthenticateMutationHookResult = ReturnType<typeof useAuthenticateMutation>;
 export type AuthenticateMutationResult = Apollo.MutationResult<AuthenticateMutation>;
 export type AuthenticateMutationOptions = Apollo.BaseMutationOptions<AuthenticateMutation, AuthenticateMutationVariables>;
+export const CreateProfileDocument = gql`
+    mutation CreateProfile($request: CreateProfileRequest!) {
+  createProfile(request: $request) {
+    ... on RelayerResult {
+      txHash
+    }
+    ... on RelayError {
+      reason
+    }
+    __typename
+  }
+}
+    `;
+export type CreateProfileMutationFn = Apollo.MutationFunction<CreateProfileMutation, CreateProfileMutationVariables>;
+
+/**
+ * __useCreateProfileMutation__
+ *
+ * To run a mutation, you first call `useCreateProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProfileMutation, { data, loading, error }] = useCreateProfileMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useCreateProfileMutation(baseOptions?: Apollo.MutationHookOptions<CreateProfileMutation, CreateProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProfileMutation, CreateProfileMutationVariables>(CreateProfileDocument, options);
+      }
+export type CreateProfileMutationHookResult = ReturnType<typeof useCreateProfileMutation>;
+export type CreateProfileMutationResult = Apollo.MutationResult<CreateProfileMutation>;
+export type CreateProfileMutationOptions = Apollo.BaseMutationOptions<CreateProfileMutation, CreateProfileMutationVariables>;
 export const ChallengeDocument = gql`
     query Challenge($request: ChallengeRequest!) {
   challenge(request: $request) {

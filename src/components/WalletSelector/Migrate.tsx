@@ -1,16 +1,18 @@
 import { useEffect, Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
-import { createProfile } from "./create-profile";
 import { pinJSONToIPFS } from "lib/pinata/pinata";
 
 import { OPENSEA_API_KEY } from "lib/config/env";
+import { useCreateProfileMutation } from "generated/graphql";
 
 export const Migrate = () => {
   const [colAddress, setColAddress] = useState("");
   const [ipfsHash, setIpfsHash] = useState("");
   const [colName, setColName] = useState("");
   let [isOpen, setIsOpen] = useState(false);
+
+  const [createProfile] = useCreateProfileMutation();
 
   function closeModal() {
     setIsOpen(false);
@@ -43,9 +45,15 @@ export const Migrate = () => {
         }).then((response) => {
           if (response.success == true) {
             setIpfsHash(response.ipfsHash);
-            createProfile(colName, `ipfs://${response.ipfsHash}`).then(
-              (response) => console.log(response)
-            );
+            // TODO
+            // createProfile(colName, `ipfs://${response.ipfsHash}`).then(
+            //   (response) => console.log(response)
+            // );
+
+            createProfile({
+              // TODO make dynamic handle
+              variables: { request: { handle: "lstest" } },
+            });
           }
         });
       })
