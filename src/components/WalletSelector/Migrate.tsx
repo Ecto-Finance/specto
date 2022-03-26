@@ -89,7 +89,7 @@ export const Migrate = () => {
       console.log(createProfileOut);
       // call follow from contract
       //let profileIdOut = getProfile;
-      console.log(profileIdOut);
+      //console.log(profileIdOut);
       //sendFollow()
     } else {
       console.log("Error with Pinata");
