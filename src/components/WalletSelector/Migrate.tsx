@@ -7,6 +7,7 @@ import { OPENSEA_API_KEY, LENS_PROXY_ADDRESS, INFURA_ID } from "lib/config/env";
 import {
   useCreateProfileMutation,
   useProfilesLazyQuery,
+  useFollowNfTsOwnedLazyQuery,
 } from "generated/graphql";
 
 import { ethers } from "ethers";
@@ -20,6 +21,7 @@ export const Migrate = () => {
   const [createProfile] = useCreateProfileMutation();
   const [{ data, error, loading }, getSigner] = useSigner();
   const [getProfile] = useProfilesLazyQuery();
+  const [getFollowNFTs] = useFollowNfTsOwnedLazyQuery();
 
   // ABI for Lens hub
   const lensHubABI = [
@@ -81,7 +83,7 @@ export const Migrate = () => {
           request: {
             handle: randomHandle,
             profilePictureUri: `ipfs://${pinataOut.ipfsHash}`,
-            followNFTURI: `ipfs://QmQdyKTPhtxZiQgCKyaED2A2ERrh9UgDpCU5sZ26bw696X`,
+            followNFTURI: `ipfs://QmQdyKTPhtxZiQgCKyaED2A2ERrh9UgDpCU5sZ26bw696X/`,
           },
         },
       });
@@ -92,11 +94,13 @@ export const Migrate = () => {
         "706af4be1ee6441e93cff2fccc22e8cd"
       );
       await provider.waitForTransaction(
+        //@ts-ignore
         createProfileOut.data.createProfile.txHash,
         1
       );
       // 3. Get Profile Id
       console.log(
+        //@ts-ignore
         `Done waiting for tx:${createProfileOut.data.createProfile.txHash}`
       );
       let profileIdOut = await getProfile({
@@ -106,9 +110,19 @@ export const Migrate = () => {
           },
         },
       });
-      console.log(profileIdOut.data.profiles);
+      console.log(profileIdOut);
+      console.log(profileIdOut.data.profiles.items[0].ownedBy);
+      console.log(profileIdOut.data.profiles.items[0].id);
       // 4. GET FollowNFT Address from profileid & Migrator Address
-
+      // let getFollowerNFTsOut = await getFollowNFTs({
+      //   variables: {
+      //     request: {
+      //       address: profileIdOut.data.profiles.items[0].ownedBy,
+      //       profileId: profileIdOut.data.profiles.items[0].id,
+      //     },
+      //   },
+      // });
+      // console.log(getFollowerNFTsOut);
       // 5. Call Follow, which mints to the Migrator Address
       //sendFollow(889);
       // 6. Send FollowNFT, update spectoswap w/ address

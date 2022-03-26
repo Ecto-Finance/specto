@@ -2158,6 +2158,13 @@ export type CreateProfileMutationVariables = Exact<{
 
 export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename: 'RelayError', reason: RelayErrorReasons } | { __typename: 'RelayerResult', txHash: any } };
 
+export type FollowNfTsOwnedQueryVariables = Exact<{
+  request: FollowerNftOwnedTokenIdsRequest;
+}>;
+
+
+export type FollowNfTsOwnedQuery = { __typename?: 'Query', followerNftOwnedTokenIds: { __typename?: 'FollowerNftOwnedTokenIds', followerNftAddress: any, tokensIds: Array<string> } };
+
 export type ChallengeQueryVariables = Exact<{
   request: ChallengeRequest;
 }>;
@@ -2301,6 +2308,42 @@ export function useCreateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProfileMutationHookResult = ReturnType<typeof useCreateProfileMutation>;
 export type CreateProfileMutationResult = Apollo.MutationResult<CreateProfileMutation>;
 export type CreateProfileMutationOptions = Apollo.BaseMutationOptions<CreateProfileMutation, CreateProfileMutationVariables>;
+export const FollowNfTsOwnedDocument = gql`
+    query FollowNFTsOwned($request: FollowerNftOwnedTokenIdsRequest!) {
+  followerNftOwnedTokenIds(request: $request) {
+    followerNftAddress
+    tokensIds
+  }
+}
+    `;
+
+/**
+ * __useFollowNfTsOwnedQuery__
+ *
+ * To run a query within a React component, call `useFollowNfTsOwnedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFollowNfTsOwnedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFollowNfTsOwnedQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useFollowNfTsOwnedQuery(baseOptions: Apollo.QueryHookOptions<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>(FollowNfTsOwnedDocument, options);
+      }
+export function useFollowNfTsOwnedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>(FollowNfTsOwnedDocument, options);
+        }
+export type FollowNfTsOwnedQueryHookResult = ReturnType<typeof useFollowNfTsOwnedQuery>;
+export type FollowNfTsOwnedLazyQueryHookResult = ReturnType<typeof useFollowNfTsOwnedLazyQuery>;
+export type FollowNfTsOwnedQueryResult = Apollo.QueryResult<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>;
 export const ChallengeDocument = gql`
     query Challenge($request: ChallengeRequest!) {
   challenge(request: $request) {
