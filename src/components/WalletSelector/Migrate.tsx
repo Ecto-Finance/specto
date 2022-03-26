@@ -3,8 +3,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
 import { pinJSONToIPFS } from "lib/pinata/pinata";
 
-import { OPENSEA_API_KEY } from "lib/config/env";
-import { useCreateProfileMutation } from "generated/graphql";
+import { OPENSEA_API_KEY, LENS_PROXY_ADDRESS } from "lib/config/env";
+import { useCreateProfileMutation, useProfilesQuery } from "generated/graphql";
+
+import { ethers } from "ethers";
+import { useConnect, useSigner } from "wagmi";
 
 export const Migrate = () => {
   const [colAddress, setColAddress] = useState("");
@@ -12,6 +15,26 @@ export const Migrate = () => {
   let [isOpen, setIsOpen] = useState(false);
 
   const [createProfile] = useCreateProfileMutation();
+  const [{ data, error, loading }, getSigner] = useSigner();
+
+  // ABI for Lens hub
+  const lensHubABI = [
+    "constructor(address followNFTImpl, address collectNFTImpl)",
+    "function follow(uint256[] calldata profileIds, bytes[] calldata datas) external",
+  ];
+  // provider for ethers
+  async function sendFollow(profileId: number) {
+    let provider = new ethers.providers.InfuraProvider("maticmum", {
+      infura: process.env.INFURA_PROJECT_ID,
+    });
+    let lensHubContract = new ethers.Contract(
+      LENS_PROXY_ADDRESS,
+      lensHubABI,
+      data
+    );
+    let res = await lensHubContract.follow([profileId]);
+    console.log(res);
+  }
 
   function closeModal() {
     setIsOpen(false);
@@ -21,40 +44,56 @@ export const Migrate = () => {
     setIsOpen(true);
   }
 
-  const findCollection = (contractAddress: string) => {
+  function buildProfileHandle() {
+    return "test" + (Math.random() * 100).toString();
+  }
+
+  const findCollection = async (contractAddress: string) => {
+    let randomHandle = buildProfileHandle();
+    /*const { data: getProfile, loading, error } = useProfilesQuery({
+    variables: {
+      request: {
+        randomHandle,
+      },
+    },
+  });*/
+
     const options = {
       method: "GET",
       headers: { "X-API-KEY": OPENSEA_API_KEY },
     };
 
-    fetch(
+    let response = await fetch(
       `https://api.opensea.io/api/v1/asset_contract/${contractAddress}`,
       options
-    )
-      .then((response) => response.json())
-      .then((response) => {
-        setColName(response.name); //could be used to make handle dynamic, but someone could front run and grab for ex: lostsoulssanctuary handle already
-        pinJSONToIPFS({
-          pinataMetadata: {
-            name: response.name,
+    );
+    let res = await response.json();
+    //setColName(res.name); //could be used to make handle dynamic, but someone could front run and grab for ex: lostsoulssanctuary handle already
+    let pinataOut = await pinJSONToIPFS({
+      pinataMetadata: {
+        name: res.name,
+      },
+      pinataContent: {
+        response,
+      },
+    });
+    if (pinataOut.success == true) {
+      let createProfileOut = await createProfile({
+        variables: {
+          request: {
+            handle: randomHandle,
+            profilePictureUri: `ipfs://${pinataOut.ipfsHash}`,
           },
-          pinataContent: {
-            response,
-          },
-        }).then((response) => {
-          if (response.success == true) {
-            createProfile({
-              variables: {
-                request: {
-                  handle: "hobbestesting4", //Need to make dynamic + lowercase and also unique
-                  profilePictureUri: `ipfs://${response.ipfsHash}`,
-                },
-              },
-            }).then((response) => console.log(response));
-          }
-        });
-      })
-      .catch((err) => console.error(err));
+        },
+      });
+      console.log(createProfileOut);
+      // call follow from contract
+      //let profileIdOut = getProfile;
+      console.log(profileIdOut);
+      //sendFollow()
+    } else {
+      console.log("Error with Pinata");
+    }
   };
 
   const handleChange = (address: any) => {
