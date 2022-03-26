@@ -3,8 +3,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
 import { pinJSONToIPFS } from "lib/pinata/pinata";
 
-import { OPENSEA_API_KEY, LENS_PROXY_ADDRESS } from "lib/config/env";
-import { useCreateProfileMutation, useProfilesQuery } from "generated/graphql";
+import { OPENSEA_API_KEY, LENS_PROXY_ADDRESS, INFURA_ID } from "lib/config/env";
+import {
+  useCreateProfileMutation,
+  useProfilesLazyQuery,
+} from "generated/graphql";
 
 import { ethers } from "ethers";
 import { useConnect, useSigner } from "wagmi";
@@ -16,23 +19,25 @@ export const Migrate = () => {
 
   const [createProfile] = useCreateProfileMutation();
   const [{ data, error, loading }, getSigner] = useSigner();
+  const [getProfile] = useProfilesLazyQuery();
 
   // ABI for Lens hub
   const lensHubABI = [
     "constructor(address followNFTImpl, address collectNFTImpl)",
     "function follow(uint256[] calldata profileIds, bytes[] calldata datas) external",
   ];
-  // provider for ethers
+
   async function sendFollow(profileId: number) {
-    let provider = new ethers.providers.InfuraProvider("maticmum", {
-      infura: process.env.INFURA_PROJECT_ID,
-    });
+    let provider = new ethers.providers.InfuraProvider(
+      "maticmum",
+      "706af4be1ee6441e93cff2fccc22e8cd"
+    );
     let lensHubContract = new ethers.Contract(
-      LENS_PROXY_ADDRESS,
+      "0x7c86e2a63941442462cce73EcA9F07F4Ad023261",
       lensHubABI,
       data
     );
-    let res = await lensHubContract.follow([profileId]);
+    let res = await lensHubContract.follow([profileId], [[]]);
     console.log(res);
   }
 
@@ -49,15 +54,7 @@ export const Migrate = () => {
   }
 
   const findCollection = async (contractAddress: string) => {
-    let randomHandle = buildProfileHandle();
-    /*const { data: getProfile, loading, error } = useProfilesQuery({
-    variables: {
-      request: {
-        randomHandle,
-      },
-    },
-  });*/
-
+    let randomHandle: string = buildProfileHandle();
     const options = {
       method: "GET",
       headers: { "X-API-KEY": OPENSEA_API_KEY },
@@ -78,19 +75,45 @@ export const Migrate = () => {
       },
     });
     if (pinataOut.success == true) {
+      // 1. Create Profile
       let createProfileOut = await createProfile({
         variables: {
           request: {
             handle: randomHandle,
             profilePictureUri: `ipfs://${pinataOut.ipfsHash}`,
+            followNFTURI: `ipfs://QmQdyKTPhtxZiQgCKyaED2A2ERrh9UgDpCU5sZ26bw696X`,
           },
         },
       });
       console.log(createProfileOut);
-      // call follow from contract
-      //let profileIdOut = getProfile;
-      //console.log(profileIdOut);
-      //sendFollow()
+      // 2. Wait for transaction to complete
+      let provider = new ethers.providers.InfuraProvider(
+        "maticmum",
+        "706af4be1ee6441e93cff2fccc22e8cd"
+      );
+      await provider.waitForTransaction(
+        createProfileOut.data.createProfile.txHash,
+        1
+      );
+      // 3. Get Profile Id
+      console.log(
+        `Done waiting for tx:${createProfileOut.data.createProfile.txHash}`
+      );
+      let profileIdOut = await getProfile({
+        variables: {
+          request: {
+            handles: [randomHandle],
+          },
+        },
+      });
+      console.log(profileIdOut.data.profiles);
+      // 4. GET FollowNFT Address from profileid & Migrator Address
+
+      // 5. Call Follow, which mints to the Migrator Address
+      //sendFollow(889);
+      // 6. Send FollowNFT, update spectoswap w/ address
+      // 7. Send and Approve SpectoSwap FollowNFT
+      /////////////////////////////////////////////////////////////////////////////////
     } else {
       console.log("Error with Pinata");
     }
