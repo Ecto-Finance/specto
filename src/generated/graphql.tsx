@@ -2146,24 +2146,12 @@ export type AuthenticateMutationVariables = Exact<{
 
 export type AuthenticateMutation = { __typename?: 'Mutation', authenticate: { __typename?: 'AuthenticationResult', accessToken: any, refreshToken: any } };
 
-export type CreateFollowTypedDataMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CreateFollowTypedDataMutation = { __typename?: 'Mutation', createFollowTypedData: { __typename?: 'CreateFollowBroadcastItemResult', id: any, expiresAt: any, typedData: { __typename?: 'CreateFollowEIP712TypedData', domain: { __typename?: 'EIP712TypedDataDomain', name: string, chainId: any, version: string, verifyingContract: any }, types: { __typename?: 'CreateFollowEIP712TypedDataTypes', FollowWithSig: Array<{ __typename?: 'EIP712TypedDataField', name: string, type: string }> }, value: { __typename?: 'CreateFollowEIP712TypedDataValue', nonce: any, deadline: any, profileIds: Array<any>, datas: Array<any> } } } };
-
-export type CreateProfileMutationVariables = Exact<{
-  request: CreateProfileRequest;
+export type FollowingQueryVariables = Exact<{
+  request: FollowingRequest;
 }>;
 
 
-export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename: 'RelayError', reason: RelayErrorReasons } | { __typename: 'RelayerResult', txHash: any } };
-
-export type FollowNfTsOwnedQueryVariables = Exact<{
-  request: FollowerNftOwnedTokenIdsRequest;
-}>;
-
-
-export type FollowNfTsOwnedQuery = { __typename?: 'Query', followerNftOwnedTokenIds: { __typename?: 'FollowerNftOwnedTokenIds', followerNftAddress: any, tokensIds: Array<string> } };
+export type FollowingQuery = { __typename?: 'Query', following: { __typename?: 'PaginatedFollowingResult', items: Array<{ __typename?: 'Following', profile: { __typename?: 'Profile', id: any, name?: string | null, bio?: string | null, location?: string | null, website?: string | null, twitterUrl?: any | null, handle: any, ownedBy: any, picture?: { __typename?: 'MediaSet', original: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null }, medium?: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null } | null, small?: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null } | null } | { __typename?: 'NftImage', contractAddress: any, tokenId: string, uri: any, verified: boolean } | null, coverPicture?: { __typename?: 'MediaSet', original: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null }, small?: { __typename?: 'Media', width?: number | null, url: any, height?: number | null, mimeType?: any | null } | null, medium?: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null } | null } | { __typename?: 'NftImage', contractAddress: any, tokenId: string, uri: any, verified: boolean } | null, depatcher?: { __typename?: 'Dispatcher', address: any, canUseRelay: boolean } | null, stats: { __typename?: 'ProfileStats', totalFollowers: number, totalFollowing: number, totalPosts: number, totalComments: number, totalMirrors: number, totalPublications: number, totalCollects: number }, followModule?: { __typename?: 'FeeFollowModuleSettings', type: FollowModules, recipient: any, amount: { __typename?: 'ModuleFeeAmount', value: string, asset: { __typename?: 'Erc20', name: string, symbol: string, decimals: number, address: any } } } | null } }>, pageInfo: { __typename?: 'PaginatedResultInfo', prev?: any | null, next?: any | null, totalCount: number } } };
 
 export type ChallengeQueryVariables = Exact<{
   request: ChallengeRequest;
@@ -2214,136 +2202,141 @@ export function useAuthenticateMutation(baseOptions?: Apollo.MutationHookOptions
 export type AuthenticateMutationHookResult = ReturnType<typeof useAuthenticateMutation>;
 export type AuthenticateMutationResult = Apollo.MutationResult<AuthenticateMutation>;
 export type AuthenticateMutationOptions = Apollo.BaseMutationOptions<AuthenticateMutation, AuthenticateMutationVariables>;
-export const CreateFollowTypedDataDocument = gql`
-    mutation CreateFollowTypedData {
-  createFollowTypedData(
-    request: {follow: [{profile: "0x01", followModule: null}]}
-  ) {
-    id
-    expiresAt
-    typedData {
-      domain {
+export const FollowingDocument = gql`
+    query Following($request: FollowingRequest!) {
+  following(request: $request) {
+    items {
+      profile {
+        id
         name
-        chainId
-        version
-        verifyingContract
-      }
-      types {
-        FollowWithSig {
-          name
-          type
+        bio
+        location
+        website
+        twitterUrl
+        handle
+        picture {
+          ... on NftImage {
+            contractAddress
+            tokenId
+            uri
+            verified
+          }
+          ... on MediaSet {
+            original {
+              url
+              width
+              height
+              mimeType
+            }
+            medium {
+              url
+              width
+              height
+              mimeType
+            }
+            small {
+              url
+              width
+              height
+              mimeType
+            }
+          }
+        }
+        coverPicture {
+          ... on NftImage {
+            contractAddress
+            tokenId
+            uri
+            verified
+          }
+          ... on MediaSet {
+            original {
+              url
+              width
+              height
+              mimeType
+            }
+            small {
+              width
+              url
+              height
+              mimeType
+            }
+            medium {
+              url
+              width
+              height
+              mimeType
+            }
+          }
+        }
+        ownedBy
+        depatcher {
+          address
+          canUseRelay
+        }
+        stats {
+          totalFollowers
+          totalFollowing
+          totalPosts
+          totalComments
+          totalMirrors
+          totalPublications
+          totalCollects
+        }
+        followModule {
+          ... on FeeFollowModuleSettings {
+            type
+            amount {
+              asset {
+                name
+                symbol
+                decimals
+                address
+              }
+              value
+            }
+            recipient
+          }
         }
       }
-      value {
-        nonce
-        deadline
-        profileIds
-        datas
-      }
     }
-  }
-}
-    `;
-export type CreateFollowTypedDataMutationFn = Apollo.MutationFunction<CreateFollowTypedDataMutation, CreateFollowTypedDataMutationVariables>;
-
-/**
- * __useCreateFollowTypedDataMutation__
- *
- * To run a mutation, you first call `useCreateFollowTypedDataMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateFollowTypedDataMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createFollowTypedDataMutation, { data, loading, error }] = useCreateFollowTypedDataMutation({
- *   variables: {
- *   },
- * });
- */
-export function useCreateFollowTypedDataMutation(baseOptions?: Apollo.MutationHookOptions<CreateFollowTypedDataMutation, CreateFollowTypedDataMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateFollowTypedDataMutation, CreateFollowTypedDataMutationVariables>(CreateFollowTypedDataDocument, options);
-      }
-export type CreateFollowTypedDataMutationHookResult = ReturnType<typeof useCreateFollowTypedDataMutation>;
-export type CreateFollowTypedDataMutationResult = Apollo.MutationResult<CreateFollowTypedDataMutation>;
-export type CreateFollowTypedDataMutationOptions = Apollo.BaseMutationOptions<CreateFollowTypedDataMutation, CreateFollowTypedDataMutationVariables>;
-export const CreateProfileDocument = gql`
-    mutation CreateProfile($request: CreateProfileRequest!) {
-  createProfile(request: $request) {
-    ... on RelayerResult {
-      txHash
+    pageInfo {
+      prev
+      next
+      totalCount
     }
-    ... on RelayError {
-      reason
-    }
-    __typename
-  }
-}
-    `;
-export type CreateProfileMutationFn = Apollo.MutationFunction<CreateProfileMutation, CreateProfileMutationVariables>;
-
-/**
- * __useCreateProfileMutation__
- *
- * To run a mutation, you first call `useCreateProfileMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateProfileMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createProfileMutation, { data, loading, error }] = useCreateProfileMutation({
- *   variables: {
- *      request: // value for 'request'
- *   },
- * });
- */
-export function useCreateProfileMutation(baseOptions?: Apollo.MutationHookOptions<CreateProfileMutation, CreateProfileMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateProfileMutation, CreateProfileMutationVariables>(CreateProfileDocument, options);
-      }
-export type CreateProfileMutationHookResult = ReturnType<typeof useCreateProfileMutation>;
-export type CreateProfileMutationResult = Apollo.MutationResult<CreateProfileMutation>;
-export type CreateProfileMutationOptions = Apollo.BaseMutationOptions<CreateProfileMutation, CreateProfileMutationVariables>;
-export const FollowNfTsOwnedDocument = gql`
-    query FollowNFTsOwned($request: FollowerNftOwnedTokenIdsRequest!) {
-  followerNftOwnedTokenIds(request: $request) {
-    followerNftAddress
-    tokensIds
   }
 }
     `;
 
 /**
- * __useFollowNfTsOwnedQuery__
+ * __useFollowingQuery__
  *
- * To run a query within a React component, call `useFollowNfTsOwnedQuery` and pass it any options that fit your needs.
- * When your component renders, `useFollowNfTsOwnedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFollowingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFollowingQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFollowNfTsOwnedQuery({
+ * const { data, loading, error } = useFollowingQuery({
  *   variables: {
  *      request: // value for 'request'
  *   },
  * });
  */
-export function useFollowNfTsOwnedQuery(baseOptions: Apollo.QueryHookOptions<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>) {
+export function useFollowingQuery(baseOptions: Apollo.QueryHookOptions<FollowingQuery, FollowingQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>(FollowNfTsOwnedDocument, options);
+        return Apollo.useQuery<FollowingQuery, FollowingQueryVariables>(FollowingDocument, options);
       }
-export function useFollowNfTsOwnedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>) {
+export function useFollowingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FollowingQuery, FollowingQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>(FollowNfTsOwnedDocument, options);
+          return Apollo.useLazyQuery<FollowingQuery, FollowingQueryVariables>(FollowingDocument, options);
         }
-export type FollowNfTsOwnedQueryHookResult = ReturnType<typeof useFollowNfTsOwnedQuery>;
-export type FollowNfTsOwnedLazyQueryHookResult = ReturnType<typeof useFollowNfTsOwnedLazyQuery>;
-export type FollowNfTsOwnedQueryResult = Apollo.QueryResult<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>;
+export type FollowingQueryHookResult = ReturnType<typeof useFollowingQuery>;
+export type FollowingLazyQueryHookResult = ReturnType<typeof useFollowingLazyQuery>;
+export type FollowingQueryResult = Apollo.QueryResult<FollowingQuery, FollowingQueryVariables>;
 export const ChallengeDocument = gql`
     query Challenge($request: ChallengeRequest!) {
   challenge(request: $request) {
