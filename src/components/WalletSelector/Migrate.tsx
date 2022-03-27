@@ -1,15 +1,48 @@
-import { useEffect, Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
 import { pinJSONToIPFS } from "lib/pinata/pinata";
 
-import { OPENSEA_API_KEY } from "lib/config/env";
+import { OPENSEA_API_KEY, LENS_PROXY_ADDRESS, INFURA_ID } from "lib/config/env";
+import {
+  useCreateProfileMutation,
+  useProfilesLazyQuery,
+  useFollowNfTsOwnedLazyQuery,
+} from "generated/graphql";
+
+import { ethers } from "ethers";
+import { useConnect, useSigner } from "wagmi";
 
 export const Migrate = () => {
   const [colAddress, setColAddress] = useState("");
-  const [ipfsHash, setIpfsHash] = useState("");
   const [colName, setColName] = useState("");
   let [isOpen, setIsOpen] = useState(false);
+
+  const [createProfile] = useCreateProfileMutation();
+  const [{ data, error, loading }, getSigner] = useSigner();
+  const [getProfile] = useProfilesLazyQuery();
+  const [getFollowNFTs] = useFollowNfTsOwnedLazyQuery();
+
+  // ABI for Lens hub
+  const lensHubABI = [
+    "constructor(address followNFTImpl, address collectNFTImpl)",
+    "function follow(uint256[] calldata profileIds, bytes[] calldata datas) external",
+  ];
+
+  async function sendFollow(profileId: string) {
+    let provider = new ethers.providers.InfuraProvider(
+      "maticmum",
+      "706af4be1ee6441e93cff2fccc22e8cd"
+    );
+    let lensHubContract = new ethers.Contract(
+      "0xd7B3481De00995046C7850bCe9a5196B7605c367",
+      lensHubABI,
+      data
+    );
+    console.log(profileId);
+    let res = await lensHubContract.follow([profileId], [[]]);
+    return res;
+  }
 
   function closeModal() {
     setIsOpen(false);
@@ -19,34 +52,94 @@ export const Migrate = () => {
     setIsOpen(true);
   }
 
-  const findCollection = (contractAddress: string) => {
+  function buildProfileHandle() {
+    return "test" + Math.floor(Math.random() * 10000).toString();
+  }
+
+  const findCollection = async (contractAddress: string) => {
+    let randomHandle: string = buildProfileHandle();
     const options = {
       method: "GET",
       headers: { "X-API-KEY": OPENSEA_API_KEY },
     };
 
-    fetch(
+    let response = await fetch(
       `https://api.opensea.io/api/v1/asset_contract/${contractAddress}`,
       options
-    )
-      .then((response) => response.json())
-      .then((response) => {
-        setColName(response.name);
-        pinJSONToIPFS({
-          pinataMetadata: {
-            name: response.name,
+    );
+    let res = await response.json();
+    //setColName(res.name); //could be used to make handle dynamic, but someone could front run and grab for ex: lostsoulssanctuary handle already
+    let pinataOut = await pinJSONToIPFS({
+      pinataMetadata: {
+        name: res.name,
+      },
+      pinataContent: {
+        response,
+      },
+    });
+    if (pinataOut.success == true) {
+      // 1. Create Profile
+      let createProfileOut = await createProfile({
+        variables: {
+          request: {
+            handle: randomHandle,
+            profilePictureUri: `ipfs://${pinataOut.ipfsHash}`,
+            followNFTURI: `ipfs://QmQdyKTPhtxZiQgCKyaED2A2ERrh9UgDpCU5sZ26bw696X/`,
           },
-          pinataContent: {
-            response,
+        },
+      });
+      console.log(createProfileOut);
+      // 2. Wait for transaction to complete
+      let provider = new ethers.providers.InfuraProvider(
+        "maticmum",
+        "706af4be1ee6441e93cff2fccc22e8cd"
+      );
+      await provider.waitForTransaction(
+        //@ts-ignore
+        createProfileOut.data.createProfile.txHash,
+        1
+      );
+      // 3. Get Profile Id
+      console.log(
+        //@ts-ignore
+        `Done waiting for tx:${createProfileOut.data.createProfile.txHash}`
+      );
+      let profileIdOut = await getProfile({
+        variables: {
+          request: {
+            handles: [randomHandle],
           },
-        }).then((response) => {
-          if (response.success == true) {
-            setIpfsHash(response.ipfsHash);
-          }
-          //TODO: Create Profile with ColName = handle and use ipfsHash in profilePictureUri
-        });
-      })
-      .catch((err) => console.error(err));
+        },
+      });
+      console.log(profileIdOut);
+      console.log(profileIdOut.data.profiles.items[0].ownedBy);
+      console.log(profileIdOut.data.profiles.items[0].id);
+
+      // 4. Follow
+      let followTxOut = await sendFollow(
+        profileIdOut.data.profiles.items[0].id
+      );
+      console.log(followTxOut);
+      await followTxOut.wait(1);
+
+      // 5. GET FollowNFT Address from profileid & Migrator Address
+      let getFollowerNFTsOut = await getFollowNFTs({
+        variables: {
+          request: {
+            address: profileIdOut.data.profiles.items[0].ownedBy,
+            profileId: profileIdOut.data.profiles.items[0].id,
+          },
+        },
+      });
+      localStorage.setItem("profileId", profileIdOut.data.profiles.items[0].id);
+      console.log(getFollowerNFTsOut);
+      // 6. Call Follow, which mints to the Migrator Address
+      // 6. Send FollowNFT, update spectoswap w/ address
+      // 7. Send and Approve SpectoSwap FollowNFT
+      /////////////////////////////////////////////////////////////////////////////////
+    } else {
+      console.log("Error with Pinata");
+    }
   };
 
   const handleChange = (address: any) => {
@@ -57,14 +150,6 @@ export const Migrate = () => {
     findCollection(contractAddress);
     setIsOpen(false);
   };
-
-  useEffect(() => {
-    console.log(ipfsHash);
-  }, [ipfsHash]);
-
-  useEffect(() => {
-    console.log(colName);
-  }, [colName]);
 
   return (
     <>

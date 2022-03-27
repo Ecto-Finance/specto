@@ -1092,9 +1092,9 @@ export type MetadataAttributeOutput = {
   /** The display type */
   displayType?: Maybe<MetadataDisplayType>;
   /** The trait type - can be anything its the name it will render so include spaces */
-  traitType: Scalars['String'];
+  traitType?: Maybe<Scalars['String']>;
   /** The value */
-  value: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 /** The metadata display types */
@@ -1212,26 +1212,31 @@ export type MutationClaimArgs = {
 
 
 export type MutationCreateCollectTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateCollectRequest;
 };
 
 
 export type MutationCreateCommentTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreatePublicCommentRequest;
 };
 
 
 export type MutationCreateFollowTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: FollowRequest;
 };
 
 
 export type MutationCreateMirrorTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateMirrorRequest;
 };
 
 
 export type MutationCreatePostTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreatePublicPostRequest;
 };
 
@@ -1242,21 +1247,25 @@ export type MutationCreateProfileArgs = {
 
 
 export type MutationCreateSetDispatcherTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: SetDispatcherRequest;
 };
 
 
 export type MutationCreateSetFollowModuleTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateSetFollowModuleRequest;
 };
 
 
 export type MutationCreateSetFollowNftUriTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateSetFollowNftUriRequest;
 };
 
 
 export type MutationCreateSetProfileImageUriTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: UpdateProfileImageRequest;
 };
 
@@ -1768,6 +1777,7 @@ export type Query = {
   recommendedProfiles: Array<Profile>;
   search: SearchResult;
   timeline: PaginatedTimelineResult;
+  userSigNonces: UserSigNonces;
   verify: Scalars['Boolean'];
   whoCollectedPublication: PaginatedWhoCollectedResult;
 };
@@ -2071,6 +2081,11 @@ export type TransactionReceipt = {
 
 export type TransactionResult = TransactionError | TransactionIndexedResult;
 
+export type TypedDataOptions = {
+  /** If you wish to override the nonce for the sig if you want to do some clever stuff in the client */
+  overrideSigNonce: Scalars['Nonce'];
+};
+
 export type UnfollowRequest = {
   profile: Scalars['ProfileId'];
 };
@@ -2097,6 +2112,11 @@ export type UpdateProfileRequest = {
   twitterUrl?: InputMaybe<Scalars['Url']>;
   /** The profile website */
   website?: InputMaybe<Scalars['Url']>;
+};
+
+export type UserSigNonces = {
+  __typename?: 'UserSigNonces';
+  lensHubOnChainSigNonce: Scalars['Nonce'];
 };
 
 /** The access request */
@@ -2126,17 +2146,31 @@ export type AuthenticateMutationVariables = Exact<{
 
 export type AuthenticateMutation = { __typename?: 'Mutation', authenticate: { __typename?: 'AuthenticationResult', accessToken: any, refreshToken: any } };
 
+export type CreateFollowTypedDataMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateFollowTypedDataMutation = { __typename?: 'Mutation', createFollowTypedData: { __typename?: 'CreateFollowBroadcastItemResult', id: any, expiresAt: any, typedData: { __typename?: 'CreateFollowEIP712TypedData', domain: { __typename?: 'EIP712TypedDataDomain', name: string, chainId: any, version: string, verifyingContract: any }, types: { __typename?: 'CreateFollowEIP712TypedDataTypes', FollowWithSig: Array<{ __typename?: 'EIP712TypedDataField', name: string, type: string }> }, value: { __typename?: 'CreateFollowEIP712TypedDataValue', nonce: any, deadline: any, profileIds: Array<any>, datas: Array<any> } } } };
+
+export type CreateProfileMutationVariables = Exact<{
+  request: CreateProfileRequest;
+}>;
+
+
+export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename: 'RelayError', reason: RelayErrorReasons } | { __typename: 'RelayerResult', txHash: any } };
+
+export type FollowNfTsOwnedQueryVariables = Exact<{
+  request: FollowerNftOwnedTokenIdsRequest;
+}>;
+
+
+export type FollowNfTsOwnedQuery = { __typename?: 'Query', followerNftOwnedTokenIds: { __typename?: 'FollowerNftOwnedTokenIds', followerNftAddress: any, tokensIds: Array<string> } };
+
 export type ChallengeQueryVariables = Exact<{
   request: ChallengeRequest;
 }>;
 
 
 export type ChallengeQuery = { __typename?: 'Query', challenge: { __typename?: 'AuthChallengeResult', text: string } };
-
-export type PingQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type PingQuery = { __typename?: 'Query', ping: string };
 
 export type ProfilesQueryVariables = Exact<{
   request: ProfileQueryRequest;
@@ -2180,6 +2214,136 @@ export function useAuthenticateMutation(baseOptions?: Apollo.MutationHookOptions
 export type AuthenticateMutationHookResult = ReturnType<typeof useAuthenticateMutation>;
 export type AuthenticateMutationResult = Apollo.MutationResult<AuthenticateMutation>;
 export type AuthenticateMutationOptions = Apollo.BaseMutationOptions<AuthenticateMutation, AuthenticateMutationVariables>;
+export const CreateFollowTypedDataDocument = gql`
+    mutation CreateFollowTypedData {
+  createFollowTypedData(
+    request: {follow: [{profile: "0x01", followModule: null}]}
+  ) {
+    id
+    expiresAt
+    typedData {
+      domain {
+        name
+        chainId
+        version
+        verifyingContract
+      }
+      types {
+        FollowWithSig {
+          name
+          type
+        }
+      }
+      value {
+        nonce
+        deadline
+        profileIds
+        datas
+      }
+    }
+  }
+}
+    `;
+export type CreateFollowTypedDataMutationFn = Apollo.MutationFunction<CreateFollowTypedDataMutation, CreateFollowTypedDataMutationVariables>;
+
+/**
+ * __useCreateFollowTypedDataMutation__
+ *
+ * To run a mutation, you first call `useCreateFollowTypedDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFollowTypedDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFollowTypedDataMutation, { data, loading, error }] = useCreateFollowTypedDataMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreateFollowTypedDataMutation(baseOptions?: Apollo.MutationHookOptions<CreateFollowTypedDataMutation, CreateFollowTypedDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFollowTypedDataMutation, CreateFollowTypedDataMutationVariables>(CreateFollowTypedDataDocument, options);
+      }
+export type CreateFollowTypedDataMutationHookResult = ReturnType<typeof useCreateFollowTypedDataMutation>;
+export type CreateFollowTypedDataMutationResult = Apollo.MutationResult<CreateFollowTypedDataMutation>;
+export type CreateFollowTypedDataMutationOptions = Apollo.BaseMutationOptions<CreateFollowTypedDataMutation, CreateFollowTypedDataMutationVariables>;
+export const CreateProfileDocument = gql`
+    mutation CreateProfile($request: CreateProfileRequest!) {
+  createProfile(request: $request) {
+    ... on RelayerResult {
+      txHash
+    }
+    ... on RelayError {
+      reason
+    }
+    __typename
+  }
+}
+    `;
+export type CreateProfileMutationFn = Apollo.MutationFunction<CreateProfileMutation, CreateProfileMutationVariables>;
+
+/**
+ * __useCreateProfileMutation__
+ *
+ * To run a mutation, you first call `useCreateProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProfileMutation, { data, loading, error }] = useCreateProfileMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useCreateProfileMutation(baseOptions?: Apollo.MutationHookOptions<CreateProfileMutation, CreateProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProfileMutation, CreateProfileMutationVariables>(CreateProfileDocument, options);
+      }
+export type CreateProfileMutationHookResult = ReturnType<typeof useCreateProfileMutation>;
+export type CreateProfileMutationResult = Apollo.MutationResult<CreateProfileMutation>;
+export type CreateProfileMutationOptions = Apollo.BaseMutationOptions<CreateProfileMutation, CreateProfileMutationVariables>;
+export const FollowNfTsOwnedDocument = gql`
+    query FollowNFTsOwned($request: FollowerNftOwnedTokenIdsRequest!) {
+  followerNftOwnedTokenIds(request: $request) {
+    followerNftAddress
+    tokensIds
+  }
+}
+    `;
+
+/**
+ * __useFollowNfTsOwnedQuery__
+ *
+ * To run a query within a React component, call `useFollowNfTsOwnedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFollowNfTsOwnedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFollowNfTsOwnedQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useFollowNfTsOwnedQuery(baseOptions: Apollo.QueryHookOptions<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>(FollowNfTsOwnedDocument, options);
+      }
+export function useFollowNfTsOwnedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>(FollowNfTsOwnedDocument, options);
+        }
+export type FollowNfTsOwnedQueryHookResult = ReturnType<typeof useFollowNfTsOwnedQuery>;
+export type FollowNfTsOwnedLazyQueryHookResult = ReturnType<typeof useFollowNfTsOwnedLazyQuery>;
+export type FollowNfTsOwnedQueryResult = Apollo.QueryResult<FollowNfTsOwnedQuery, FollowNfTsOwnedQueryVariables>;
 export const ChallengeDocument = gql`
     query Challenge($request: ChallengeRequest!) {
   challenge(request: $request) {
@@ -2215,38 +2379,6 @@ export function useChallengeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type ChallengeQueryHookResult = ReturnType<typeof useChallengeQuery>;
 export type ChallengeLazyQueryHookResult = ReturnType<typeof useChallengeLazyQuery>;
 export type ChallengeQueryResult = Apollo.QueryResult<ChallengeQuery, ChallengeQueryVariables>;
-export const PingDocument = gql`
-    query Ping {
-  ping
-}
-    `;
-
-/**
- * __usePingQuery__
- *
- * To run a query within a React component, call `usePingQuery` and pass it any options that fit your needs.
- * When your component renders, `usePingQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePingQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePingQuery(baseOptions?: Apollo.QueryHookOptions<PingQuery, PingQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<PingQuery, PingQueryVariables>(PingDocument, options);
-      }
-export function usePingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PingQuery, PingQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<PingQuery, PingQueryVariables>(PingDocument, options);
-        }
-export type PingQueryHookResult = ReturnType<typeof usePingQuery>;
-export type PingLazyQueryHookResult = ReturnType<typeof usePingLazyQuery>;
-export type PingQueryResult = Apollo.QueryResult<PingQuery, PingQueryVariables>;
 export const ProfilesDocument = gql`
     query Profiles($request: ProfileQueryRequest!) {
   profiles(request: $request) {

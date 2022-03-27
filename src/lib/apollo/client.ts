@@ -5,19 +5,17 @@ import {
   NormalizedCacheObject,
   from,
 } from "@apollo/client";
-import { getAuthenticationToken } from "../../lib/lens/state";
 
-import { errorLink, httpLink } from "lib/apollo/links";
+import { errorLink, httpLink, authLink } from "lib/apollo/links";
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
-
 /**
  * Create Apollo client.
  */
 const createApolloClient = () =>
   new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: from([errorLink, httpLink]),
+    link: authLink.concat(from([errorLink, httpLink])),
     cache: new InMemoryCache(),
   });
 
