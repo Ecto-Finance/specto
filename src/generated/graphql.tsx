@@ -1092,9 +1092,9 @@ export type MetadataAttributeOutput = {
   /** The display type */
   displayType?: Maybe<MetadataDisplayType>;
   /** The trait type - can be anything its the name it will render so include spaces */
-  traitType: Scalars['String'];
+  traitType?: Maybe<Scalars['String']>;
   /** The value */
-  value: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 /** The metadata display types */
@@ -1212,26 +1212,31 @@ export type MutationClaimArgs = {
 
 
 export type MutationCreateCollectTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateCollectRequest;
 };
 
 
 export type MutationCreateCommentTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreatePublicCommentRequest;
 };
 
 
 export type MutationCreateFollowTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: FollowRequest;
 };
 
 
 export type MutationCreateMirrorTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateMirrorRequest;
 };
 
 
 export type MutationCreatePostTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreatePublicPostRequest;
 };
 
@@ -1242,21 +1247,25 @@ export type MutationCreateProfileArgs = {
 
 
 export type MutationCreateSetDispatcherTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: SetDispatcherRequest;
 };
 
 
 export type MutationCreateSetFollowModuleTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateSetFollowModuleRequest;
 };
 
 
 export type MutationCreateSetFollowNftUriTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: CreateSetFollowNftUriRequest;
 };
 
 
 export type MutationCreateSetProfileImageUriTypedDataArgs = {
+  options?: InputMaybe<TypedDataOptions>;
   request: UpdateProfileImageRequest;
 };
 
@@ -1768,6 +1777,7 @@ export type Query = {
   recommendedProfiles: Array<Profile>;
   search: SearchResult;
   timeline: PaginatedTimelineResult;
+  userSigNonces: UserSigNonces;
   verify: Scalars['Boolean'];
   whoCollectedPublication: PaginatedWhoCollectedResult;
 };
@@ -2071,6 +2081,11 @@ export type TransactionReceipt = {
 
 export type TransactionResult = TransactionError | TransactionIndexedResult;
 
+export type TypedDataOptions = {
+  /** If you wish to override the nonce for the sig if you want to do some clever stuff in the client */
+  overrideSigNonce: Scalars['Nonce'];
+};
+
 export type UnfollowRequest = {
   profile: Scalars['ProfileId'];
 };
@@ -2099,6 +2114,11 @@ export type UpdateProfileRequest = {
   website?: InputMaybe<Scalars['Url']>;
 };
 
+export type UserSigNonces = {
+  __typename?: 'UserSigNonces';
+  lensHubOnChainSigNonce: Scalars['Nonce'];
+};
+
 /** The access request */
 export type VerifyRequest = {
   /** The access token */
@@ -2125,6 +2145,13 @@ export type AuthenticateMutationVariables = Exact<{
 
 
 export type AuthenticateMutation = { __typename?: 'Mutation', authenticate: { __typename?: 'AuthenticationResult', accessToken: any, refreshToken: any } };
+
+export type FollowingQueryVariables = Exact<{
+  request: FollowingRequest;
+}>;
+
+
+export type FollowingQuery = { __typename?: 'Query', following: { __typename?: 'PaginatedFollowingResult', items: Array<{ __typename?: 'Following', profile: { __typename?: 'Profile', id: any, name?: string | null, bio?: string | null, location?: string | null, website?: string | null, twitterUrl?: any | null, handle: any, ownedBy: any, picture?: { __typename?: 'MediaSet', original: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null }, medium?: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null } | null, small?: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null } | null } | { __typename?: 'NftImage', contractAddress: any, tokenId: string, uri: any, verified: boolean } | null, coverPicture?: { __typename?: 'MediaSet', original: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null }, small?: { __typename?: 'Media', width?: number | null, url: any, height?: number | null, mimeType?: any | null } | null, medium?: { __typename?: 'Media', url: any, width?: number | null, height?: number | null, mimeType?: any | null } | null } | { __typename?: 'NftImage', contractAddress: any, tokenId: string, uri: any, verified: boolean } | null, depatcher?: { __typename?: 'Dispatcher', address: any, canUseRelay: boolean } | null, stats: { __typename?: 'ProfileStats', totalFollowers: number, totalFollowing: number, totalPosts: number, totalComments: number, totalMirrors: number, totalPublications: number, totalCollects: number }, followModule?: { __typename?: 'FeeFollowModuleSettings', type: FollowModules, recipient: any, amount: { __typename?: 'ModuleFeeAmount', value: string, asset: { __typename?: 'Erc20', name: string, symbol: string, decimals: number, address: any } } } | null } }>, pageInfo: { __typename?: 'PaginatedResultInfo', prev?: any | null, next?: any | null, totalCount: number } } };
 
 export type ChallengeQueryVariables = Exact<{
   request: ChallengeRequest;
@@ -2180,6 +2207,141 @@ export function useAuthenticateMutation(baseOptions?: Apollo.MutationHookOptions
 export type AuthenticateMutationHookResult = ReturnType<typeof useAuthenticateMutation>;
 export type AuthenticateMutationResult = Apollo.MutationResult<AuthenticateMutation>;
 export type AuthenticateMutationOptions = Apollo.BaseMutationOptions<AuthenticateMutation, AuthenticateMutationVariables>;
+export const FollowingDocument = gql`
+    query Following($request: FollowingRequest!) {
+  following(request: $request) {
+    items {
+      profile {
+        id
+        name
+        bio
+        location
+        website
+        twitterUrl
+        handle
+        picture {
+          ... on NftImage {
+            contractAddress
+            tokenId
+            uri
+            verified
+          }
+          ... on MediaSet {
+            original {
+              url
+              width
+              height
+              mimeType
+            }
+            medium {
+              url
+              width
+              height
+              mimeType
+            }
+            small {
+              url
+              width
+              height
+              mimeType
+            }
+          }
+        }
+        coverPicture {
+          ... on NftImage {
+            contractAddress
+            tokenId
+            uri
+            verified
+          }
+          ... on MediaSet {
+            original {
+              url
+              width
+              height
+              mimeType
+            }
+            small {
+              width
+              url
+              height
+              mimeType
+            }
+            medium {
+              url
+              width
+              height
+              mimeType
+            }
+          }
+        }
+        ownedBy
+        depatcher {
+          address
+          canUseRelay
+        }
+        stats {
+          totalFollowers
+          totalFollowing
+          totalPosts
+          totalComments
+          totalMirrors
+          totalPublications
+          totalCollects
+        }
+        followModule {
+          ... on FeeFollowModuleSettings {
+            type
+            amount {
+              asset {
+                name
+                symbol
+                decimals
+                address
+              }
+              value
+            }
+            recipient
+          }
+        }
+      }
+    }
+    pageInfo {
+      prev
+      next
+      totalCount
+    }
+  }
+}
+    `;
+
+/**
+ * __useFollowingQuery__
+ *
+ * To run a query within a React component, call `useFollowingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFollowingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFollowingQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useFollowingQuery(baseOptions: Apollo.QueryHookOptions<FollowingQuery, FollowingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FollowingQuery, FollowingQueryVariables>(FollowingDocument, options);
+      }
+export function useFollowingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FollowingQuery, FollowingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FollowingQuery, FollowingQueryVariables>(FollowingDocument, options);
+        }
+export type FollowingQueryHookResult = ReturnType<typeof useFollowingQuery>;
+export type FollowingLazyQueryHookResult = ReturnType<typeof useFollowingLazyQuery>;
+export type FollowingQueryResult = Apollo.QueryResult<FollowingQuery, FollowingQueryVariables>;
 export const ChallengeDocument = gql`
     query Challenge($request: ChallengeRequest!) {
   challenge(request: $request) {

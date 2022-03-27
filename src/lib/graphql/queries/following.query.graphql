@@ -1,17 +1,14 @@
-import { initializeApollo } from "lib/apollo/client";
-import { gql } from "@apollo/client";
-import { prettyJSON } from "../../lib/lens/helpers";
-
-const GET_PROFILES = `
-  query($request: ProfileQueryRequest!) {
-    profiles(request: $request) {
-      items {
+query Following($request: FollowingRequest!) {
+  following(request: $request) {
+    items {
+      profile {
         id
         name
         bio
         location
         website
         twitterUrl
+        handle
         picture {
           ... on NftImage {
             contractAddress
@@ -22,12 +19,24 @@ const GET_PROFILES = `
           ... on MediaSet {
             original {
               url
+              width
+              height
+              mimeType
+            }
+            medium {
+              url
+              width
+              height
+              mimeType
+            }
+            small {
+              url
+              width
+              height
               mimeType
             }
           }
-          __typename
         }
-        handle
         coverPicture {
           ... on NftImage {
             contractAddress
@@ -38,10 +47,23 @@ const GET_PROFILES = `
           ... on MediaSet {
             original {
               url
+              width
+              height
+              mimeType
+            }
+            small {
+              width
+              url
+              height
+              mimeType
+            }
+            medium {
+              url
+              width
+              height
               mimeType
             }
           }
-          __typename
         }
         ownedBy
         depatcher {
@@ -62,8 +84,8 @@ const GET_PROFILES = `
             type
             amount {
               asset {
-                symbol
                 name
+                symbol
                 decimals
                 address
               }
@@ -71,37 +93,13 @@ const GET_PROFILES = `
             }
             recipient
           }
-          __typename
         }
       }
-      pageInfo {
-        prev
-        next
-        totalCount
-      }
+    }
+    pageInfo {
+      prev
+      next
+      totalCount
     }
   }
-`;
-
-export const getProfilesRequest = (ownedBy) => {
-  return initializeApollo().query({
-    query: gql(GET_PROFILES),
-    variables: {
-      request: {
-        ownedBy,
-      },
-    },
-  });
-};
-
-export const getProfiles = async (address) => {
-  console.log("profiles of: address", address);
-
-  const request = { ownedBy: address };
-
-  const profilesFromProfileIds = await getProfilesRequest(request);
-
-  prettyJSON("profiles: result", profilesFromProfileIds.data);
-
-  return profilesFromProfileIds.data;
-};
+}
