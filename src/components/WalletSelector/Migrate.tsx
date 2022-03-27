@@ -11,7 +11,7 @@ import {
 } from "generated/graphql";
 
 import { ethers } from "ethers";
-import { useConnect, useSigner } from "wagmi";
+import { useConnect, useSigner, useAccount } from "wagmi";
 
 export const Migrate = () => {
   const [colAddress, setColAddress] = useState("");
@@ -19,6 +19,7 @@ export const Migrate = () => {
   let [isOpen, setIsOpen] = useState(false);
 
   const [createProfile] = useCreateProfileMutation();
+  const [{ data: accountData }, disconnect] = useAccount({ fetchEns: true });
   const [{ data, error, loading }, getSigner] = useSigner();
   const [getProfile] = useProfilesLazyQuery();
   const [getFollowNFTs] = useFollowNfTsOwnedLazyQuery();
@@ -27,6 +28,15 @@ export const Migrate = () => {
   const lensHubABI = [
     "constructor(address followNFTImpl, address collectNFTImpl)",
     "function follow(uint256[] calldata profileIds, bytes[] calldata datas) external",
+  ];
+
+  const erc721ABI = [
+    "function safeTransferFrom(address from,address to,uint256 tokenId) external",
+  ];
+
+  const spectoSwapABI = [
+    "constructor(address _collectionNFTAddress, address _followNFTAddress)",
+    "function updateFollowNFTAddress(address _newAddress)",
   ];
 
   async function sendFollow(profileId: string) {
@@ -39,7 +49,6 @@ export const Migrate = () => {
       lensHubABI,
       data
     );
-    console.log(profileId);
     let res = await lensHubContract.follow([profileId], [[]]);
     return res;
   }
@@ -97,7 +106,7 @@ export const Migrate = () => {
       await provider.waitForTransaction(
         //@ts-ignore
         createProfileOut.data.createProfile.txHash,
-        1
+        2
       );
       // 3. Get Profile Id
       console.log(
@@ -120,8 +129,12 @@ export const Migrate = () => {
         profileIdOut.data.profiles.items[0].id
       );
       console.log(followTxOut);
-      await followTxOut.wait(1);
+      await followTxOut.wait(2);
 
+      console.log(
+        //@ts-ignore
+        `Send Follow Confirmed`
+      );
       // 5. GET FollowNFT Address from profileid & Migrator Address
       let getFollowerNFTsOut = await getFollowNFTs({
         variables: {
@@ -133,9 +146,44 @@ export const Migrate = () => {
       });
       localStorage.setItem("profileId", profileIdOut.data.profiles.items[0].id);
       console.log(getFollowerNFTsOut);
+
       // 6. Call Follow, which mints to the Migrator Address
-      // 6. Send FollowNFT, update spectoswap w/ address
-      // 7. Send and Approve SpectoSwap FollowNFT
+      console.log(`Profile ID set to local storage`);
+      console.log(
+        getFollowerNFTsOut,
+        getFollowerNFTsOut.data.followerNftOwnedTokenIds.followerNftAddress
+      );
+
+      // 7. Send FollowNFT, update spectoswap w/ address
+      let followNFT = new ethers.Contract(
+        getFollowerNFTsOut.data.followerNftOwnedTokenIds.followerNftAddress,
+        erc721ABI,
+        data
+      );
+      console.log(
+        //@ts-ignore
+        `Sending tokenId:0 FollowerNFT from ${accountData.address} to SpectoSwap`
+      );
+
+      // 8. Send FollowNFT, to SpectoSwap
+      let res = await followNFT
+        .connect(data)
+        .safeTransferFrom(
+          accountData.address,
+          "0x89E87a7Ba64A4658c91DEa824D2876Fb8f4B68a2",
+          1
+        );
+
+      // 9. Update spectoswap w/ address
+      let spectoswap = new ethers.Contract(
+        "0x89E87a7Ba64A4658c91DEa824D2876Fb8f4B68a2",
+        spectoSwapABI,
+        data
+      );
+      await spectoswap.updateFollowNFTAddress(
+        getFollowerNFTsOut.data.followerNftOwnedTokenIds.followerNftAddress
+      );
+
       /////////////////////////////////////////////////////////////////////////////////
     } else {
       console.log("Error with Pinata");
