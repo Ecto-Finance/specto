@@ -48,7 +48,7 @@ const Details = ({ profile }) => {
           <div className="mb-4 text-center text-4xl">
             <span className="ml-4 text-2xl">profile Id: #{profile.id}</span>
           </div>
-          <Follow />
+          <Follow tokenId={undefined} />
         </div>
       </div>
       <Footer />
