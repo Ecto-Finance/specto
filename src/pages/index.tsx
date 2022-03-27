@@ -3,7 +3,7 @@ import { Footer } from "components/Footer";
 import { Header } from "components/Header";
 import { Follow } from "components/WalletSelector/Follow";
 import Head from "next/head";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAccount, useSigner } from "wagmi";
 import { ethers } from "ethers";
 import { COLLECTION_NFT_ADDRESS } from "lib/config/env";
@@ -36,10 +36,6 @@ const Home = ({ profiles, address }) => {
     console.log("COLLECTION ADDRESS: ", COLLECTION_NFT_ADDRESS);
     let res = await lensHubContract.walletOfOwner(accountData.address);
 
-    setNfts(res.toString().split(","));
-  }
-
-  const followNFTs = async () => {
     let getFollowerNFTsOut = await getFollowNFTs({
       variables: {
         request: {
@@ -52,11 +48,9 @@ const Home = ({ profiles, address }) => {
     console.log(getFollowerNFTsOut);
 
     setLensNfts(getFollowerNFTsOut.data.followerNftOwnedTokenIds.tokensIds);
-  };
 
-  useEffect(() => {
-    console.log(lensNfts);
-  }, [lensNfts]);
+    setNfts(res.toString().split(","));
+  }
 
   return (
     <div className="h-screen w-full justify-between bg-primary-light text-black dark:bg-primary-dark dark:text-white">
@@ -76,12 +70,6 @@ const Home = ({ profiles, address }) => {
                 onClick={() => walletOfOwner()}
               >
                 Get Profiles
-              </button>
-              <button
-                className="mx-1 rounded-lg bg-primary-green py-2 px-4"
-                onClick={() => followNFTs()}
-              >
-                Get Follow NFTs
               </button>
               <div className="mt-6 flex flex-col items-center justify-center">
                 <p>Here are my NFTs</p>
