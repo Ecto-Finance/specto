@@ -9,7 +9,7 @@ import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
 
-export const Follow = ({ tokenId }) => {
+export const UnFollow = ({ tokenId }) => {
   const [{ data: accountData }] = useAccount();
   const [{ data, error, loading }, getSigner] = useSigner();
   const [id, setId] = useState();
@@ -30,7 +30,7 @@ export const Follow = ({ tokenId }) => {
       "maticmum",
       "706af4be1ee6441e93cff2fccc22e8cd"
     );
-    console.log(tokenId);
+    console.log({ SPECTO_SWAP_ADDRESS });
 
     let spectoSwapContract = new ethers.Contract(
       SPECTO_SWAP_ADDRESS,
@@ -42,13 +42,15 @@ export const Follow = ({ tokenId }) => {
       erc721ABI,
       data
     );
+    console.log(data);
     let resOut = await collectionContract.setApprovalForAll(
       SPECTO_SWAP_ADDRESS,
       true
     );
-    await resOut.wait(5);
+    await resOut.wait(2);
 
     let res = await spectoSwapContract.connect(data).swapToLens(tokenId);
+    console.log(res);
   }
 
   async function swapFromLens(tokenId: number) {
@@ -70,30 +72,19 @@ export const Follow = ({ tokenId }) => {
       erc721ABI,
       data
     );
-
+    console.log(data);
     let resOut = await followNFTContract.setApprovalForAll(
       SPECTO_SWAP_ADDRESS,
       true
     );
-    await resOut.wait(3);
-
-    let collectionNFTContract = new ethers.Contract(
-      COLLECTION_NFT_ADDRESS,
-      erc721ABI,
-      data
-    );
-    let resOut2 = await collectionNFTContract.setApprovalForAll(
-      SPECTO_SWAP_ADDRESS,
-      true
-    );
-    await resOut2.wait(3);
+    await resOut.wait(2);
 
     let res = await spectoSwapContract.connect(data).swapFromLens(tokenId);
     console.log(res);
   }
 
   const Follow = (tokenIdIn: number) => {
-    swapToLens(tokenIdIn);
+    swapToLens(tokenId);
   };
 
   const Unfollow = (tokenIdIn: number) => {
@@ -107,9 +98,9 @@ export const Follow = ({ tokenId }) => {
       <button
         type="button"
         className="inline-flex justify-center rounded-md border border-transparent bg-primary-green px-4 py-2 text-sm font-medium text-white hover:bg-opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-green focus-visible:ring-offset-2"
-        onClick={() => Follow(tokenId)}
+        onClick={() => UnFollow(tokenId)}
       >
-        Follow
+        UnFollow
       </button>
     </div>
   );

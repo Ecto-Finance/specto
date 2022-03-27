@@ -2,6 +2,7 @@
 import { Footer } from "components/Footer";
 import { Header } from "components/Header";
 import { Follow } from "components/WalletSelector/Follow";
+import { UnFollow } from "components/WalletSelector/UnFollow";
 import Head from "next/head";
 import React, { useState } from "react";
 import { useAccount, useSigner } from "wagmi";
@@ -72,35 +73,14 @@ const Home = ({ profiles, address }) => {
                 Get Profiles
               </button>
               <div className="mt-6 flex flex-col items-center justify-center">
-                <p>Here are my NFTs</p>
+                <p>My Collection NFTs</p>
                 <div className=" mx-auto mb-40 grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
                   {nfts &&
-                    nfts.map((nfts, index) => {
+                    nfts.map((nft, index) => {
                       return (
                         <div key={index}>
                           <div className="absolute ml-2 mt-1 dark:text-black">
                             {" "}
-                            {nfts}
-                          </div>
-                          <img
-                            src="/images/lens.jpg"
-                            alt=""
-                            className="rounded-2xl"
-                          />{" "}
-                          <Follow tokenId={nfts} />
-                        </div>
-                      );
-                    })}
-                </div>
-              </div>
-              <div className="flex flex-col items-center justify-center">
-                <p>Here are my Lens follow NFTs</p>
-                <div className=" mx-auto mb-40 grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
-                  {lensNfts &&
-                    lensNfts.map((nft, index) => {
-                      return (
-                        <div key={index}>
-                          <div className="absolute ml-2 mt-1 dark:text-black">
                             {nft}
                           </div>
                           <img
@@ -108,14 +88,34 @@ const Home = ({ profiles, address }) => {
                             alt=""
                             className="rounded-2xl"
                           />{" "}
-                          <div className="space-x-4 ">
-                            <button
+                          <Follow tokenId={nft} />
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center">
+                <p>My Lens NFTs</p>
+                <div className=" mx-auto mb-40 grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
+                  {lensNfts &&
+                    lensNfts.map((nft, index) => {
+                      return (
+                        <div key={index}>
+                          <div className="absolute ml-2 mt-1 dark:text-black">
+                            {parseInt(nft, 16)}
+                          </div>
+                          <img
+                            src="/images/lens.jpg"
+                            alt=""
+                            className="rounded-2xl"
+                          />{" "}
+                          {/*<button
                               type="button"
                               className="inline-flex justify-center rounded-md border border-transparent bg-primary-green px-4 py-2 text-sm font-medium text-white hover:bg-opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-green focus-visible:ring-offset-2"
                             >
                               Unfollow
-                            </button>
-                          </div>
+                            </button>*/}
+                          <UnFollow tokenId={parseInt(nft, 16)} />
                         </div>
                       );
                     })}
@@ -128,8 +128,7 @@ const Home = ({ profiles, address }) => {
                 {" "}
                 <div className="text-5xl">Welcome to Specto.</div>
                 <div className="mt-4">
-                  Please connect your wallet to Metamask to view the
-                  application.
+                  Please connect via Metamask or Frame to view the application.
                 </div>
               </div>
             </div>
