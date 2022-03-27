@@ -12,7 +12,7 @@ export const Header = () => {
           <button className=" text-lg sm:inline-flex">
             <Link href="/" passHref>
               <Image
-                src="/images/ecto-logo.png"
+                src="/images/specto-black.png"
                 alt=""
                 width={30}
                 height={30}
