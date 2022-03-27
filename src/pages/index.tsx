@@ -1,29 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 import { Footer } from "components/Footer";
 import { Header } from "components/Header";
-import { getProfiles } from "components/profile/getProfile";
 import { Follow } from "components/WalletSelector/Follow";
 import Head from "next/head";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
-import { useFollowingQuery } from "generated/graphql";
 import { ethers } from "ethers";
 
 /**
  * Collections page.
  */
 
-export const getStaticProps = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/users");
-  const data = await res.json();
-
-  return {
-    props: { profiles: data },
-  };
-};
-
-const Collections = ({ profiles, address }) => {
+const Home = ({ profiles, address }) => {
   const [{ data: accountData }] = useAccount({ fetchEns: true });
   const [{ data, error, loading }, getSigner] = useSigner();
   const [nfts, setNfts] = useState(null);
@@ -54,6 +42,10 @@ const Collections = ({ profiles, address }) => {
     setNfts(res.toString().split(","));
   }
 
+  useEffect(() => {
+    walletOfOwner;
+  }, [nfts]);
+
   return (
     <div className="h-screen w-full justify-between bg-primary-light text-black dark:bg-primary-dark dark:text-white">
       <Head>
@@ -64,41 +56,47 @@ const Collections = ({ profiles, address }) => {
       <Header />
       <div className="flex items-center justify-center">
         <div className="text-center">
-          <div className="text-2xl">Welcome to Specto</div>
-          <button
-            className="mx-1 rounded-lg bg-primary-green py-2 px-4"
-            onClick={() => walletOfOwner()}
-          >
-            Get Profiles
-          </button>
-          <div className=" mx-auto  grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
-            {nfts &&
-              nfts.map((nfts, index) => {
-                return (
-                  <div key={index}>
-                    <div className="absolute ml-2 mt-1 dark:text-black">
-                      {" "}
-                      {nfts}
-                    </div>
-                    <img
-                      src="/images/lens.jpg"
-                      alt=""
-                      className="rounded-2xl"
-                    />{" "}
-                    <Follow tokenId={nfts} />
-                  </div>
-                );
-              })}
-          </div>
-          <div className="mx-auto mt-10 max-w-7xl justify-between">
-            <div>Not Following</div>
-
-            <div>Following</div>
-
-            <div className=" mx-auto grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
-              ToDo
+          {accountData?.address ? (
+            <div>
+              {" "}
+              <button
+                className="mx-1 rounded-lg bg-primary-green py-2 px-4"
+                onClick={() => walletOfOwner()}
+              >
+                Get Profiles
+              </button>
+              <div className=" mx-auto mb-40 grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
+                {nfts &&
+                  nfts.map((nfts, index) => {
+                    return (
+                      <div key={index}>
+                        <div className="absolute ml-2 mt-1 dark:text-black">
+                          {" "}
+                          {nfts}
+                        </div>
+                        <img
+                          src="/images/lens.jpg"
+                          alt=""
+                          className="rounded-2xl"
+                        />{" "}
+                        <Follow tokenId={nfts} />
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mb-80">
+              <div className="mt-80">
+                {" "}
+                <div className="text-5xl">Welcome to Specto.</div>
+                <div className="mt-4">
+                  Please connect your wallet to Metamask to view the
+                  application.
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <Footer />
@@ -106,4 +104,4 @@ const Collections = ({ profiles, address }) => {
   );
 };
 
-export default Collections;
+export default Home;
