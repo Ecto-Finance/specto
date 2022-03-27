@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Migrate } from "./Migrate";
 import { setAuthenticationToken } from "lib/lens/state";
 import { useAuthenticateMutation, useChallengeQuery } from "generated/graphql";
+import { UpdateProfile } from "./UpdateProfile";
 
 export const Login = ({ address }) => {
   const [, signMessage] = useSignMessage();
@@ -36,7 +37,10 @@ export const Login = ({ address }) => {
   return (
     <div>
       {accessToken ? (
-        <Migrate />
+        <div className="flex space-x-2">
+          <UpdateProfile />
+          <Migrate />
+        </div>
       ) : (
         <div className="space-x-2">
           <button

@@ -753,6 +753,8 @@ export type Erc20Amount = {
 
 export type ExplorePublicationRequest = {
   cursor?: InputMaybe<Scalars['Cursor']>;
+  /** If you wish to exclude any results for profile ids */
+  excludeProfileIds?: InputMaybe<Array<Scalars['ProfileId']>>;
   limit?: InputMaybe<Scalars['LimitScalar']>;
   /** If you want the randomizer off (default on) */
   noRandomize?: InputMaybe<Scalars['Boolean']>;
@@ -2158,6 +2160,13 @@ export type CreateProfileMutationVariables = Exact<{
 
 export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename: 'RelayError', reason: RelayErrorReasons } | { __typename: 'RelayerResult', txHash: any } };
 
+export type UpdateProfileMutationVariables = Exact<{
+  request: UpdateProfileRequest;
+}>;
+
+
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', id: any } };
+
 export type FollowNfTsOwnedQueryVariables = Exact<{
   request: FollowerNftOwnedTokenIdsRequest;
 }>;
@@ -2315,6 +2324,39 @@ export function useCreateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProfileMutationHookResult = ReturnType<typeof useCreateProfileMutation>;
 export type CreateProfileMutationResult = Apollo.MutationResult<CreateProfileMutation>;
 export type CreateProfileMutationOptions = Apollo.BaseMutationOptions<CreateProfileMutation, CreateProfileMutationVariables>;
+export const UpdateProfileDocument = gql`
+    mutation UpdateProfile($request: UpdateProfileRequest!) {
+  updateProfile(request: $request) {
+    id
+  }
+}
+    `;
+export type UpdateProfileMutationFn = Apollo.MutationFunction<UpdateProfileMutation, UpdateProfileMutationVariables>;
+
+/**
+ * __useUpdateProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProfileMutation, { data, loading, error }] = useUpdateProfileMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProfileMutation, UpdateProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProfileMutation, UpdateProfileMutationVariables>(UpdateProfileDocument, options);
+      }
+export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
+export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
+export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
 export const FollowNfTsOwnedDocument = gql`
     query FollowNFTsOwned($request: FollowerNftOwnedTokenIdsRequest!) {
   followerNftOwnedTokenIds(request: $request) {

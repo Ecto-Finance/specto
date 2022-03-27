@@ -1,0 +1,5 @@
+mutation UpdateProfile($request: UpdateProfileRequest!) {
+  updateProfile(request: $request) {
+    id
+  }
+}
