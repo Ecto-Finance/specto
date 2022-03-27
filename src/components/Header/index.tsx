@@ -9,13 +9,13 @@ export const Header = () => {
     <div className="sticky top-0 mx-auto flex w-full max-w-7xl justify-between bg-primary-light p-4 dark:bg-primary-dark">
       <div className="flex items-center justify-center space-x-2">
         <div>
-          <button className=" text-lg sm:inline-flex">
+          <button className="align-middle text-lg sm:inline-flex">
             <Link href="/" passHref>
               <Image
                 src="/images/specto-black.png"
                 alt=""
-                width={30}
-                height={30}
+                width={40}
+                height={40}
               />
             </Link>
           </button>
