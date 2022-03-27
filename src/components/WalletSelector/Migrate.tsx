@@ -3,7 +3,12 @@ import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
 import { pinJSONToIPFS } from "lib/pinata/pinata";
 
-import { OPENSEA_API_KEY, LENS_PROXY_ADDRESS, INFURA_ID } from "lib/config/env";
+import {
+  OPENSEA_API_KEY,
+  LENS_PROXY_ADDRESS,
+  INFURA_ID,
+  SPECTO_SWAP_ADDRESS,
+} from "lib/config/env";
 import {
   useCreateProfileMutation,
   useProfilesLazyQuery,
@@ -125,11 +130,23 @@ export const Migrate = () => {
       console.log(profileIdOut.data.profiles.items[0].id);
 
       // 4. Follow
-      let followTxOut = await sendFollow(
+      let followTxOut1 = await sendFollow(
         profileIdOut.data.profiles.items[0].id
       );
-      console.log(followTxOut);
-      await followTxOut.wait(2);
+      console.log(followTxOut1);
+      await followTxOut1.wait(2);
+      // 2
+      let followTxOut2 = await sendFollow(
+        profileIdOut.data.profiles.items[0].id
+      );
+      console.log(followTxOut2);
+      await followTxOut2.wait(2);
+      // 3
+      let followTxOut3 = await sendFollow(
+        profileIdOut.data.profiles.items[0].id
+      );
+      console.log(followTxOut3);
+      await followTxOut3.wait(2);
 
       console.log(
         //@ts-ignore
@@ -145,6 +162,10 @@ export const Migrate = () => {
         },
       });
       localStorage.setItem("profileId", profileIdOut.data.profiles.items[0].id);
+      localStorage.setItem(
+        "followAddress",
+        getFollowerNFTsOut.data.followerNftOwnedTokenIds.followerNftAddress
+      );
       console.log(getFollowerNFTsOut);
 
       // 6. Call Follow, which mints to the Migrator Address
@@ -168,15 +189,11 @@ export const Migrate = () => {
       // 8. Send FollowNFT, to SpectoSwap
       let res = await followNFT
         .connect(data)
-        .safeTransferFrom(
-          accountData.address,
-          "0x89E87a7Ba64A4658c91DEa824D2876Fb8f4B68a2",
-          1
-        );
+        .safeTransferFrom(accountData.address, SPECTO_SWAP_ADDRESS, 1);
 
       // 9. Update spectoswap w/ address
       let spectoswap = new ethers.Contract(
-        "0x89E87a7Ba64A4658c91DEa824D2876Fb8f4B68a2",
+        SPECTO_SWAP_ADDRESS,
         spectoSwapABI,
         data
       );

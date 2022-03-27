@@ -1,4 +1,8 @@
-import { SPECTO_SWAP_ADDRESS } from "lib/config/env";
+import {
+  SPECTO_SWAP_ADDRESS,
+  INFURA_ID,
+  COLLECTION_NFT_ADDRESS,
+} from "lib/config/env";
 import { ethers } from "ethers";
 import { useAccount, useSigner } from "wagmi";
 import { Fragment, useState } from "react";
@@ -17,32 +21,66 @@ export const Follow = (tokenId) => {
     "function swapToLens(uint256 tokenId) external",
     "function swapFromLens(uint256 tokenId) external",
   ];
+
+  const erc721ABI = [
+    "function setApprovalForAll(address operator, bool _approved)",
+  ];
   // provider for ethers
   async function swapToLens(tokenId: number) {
-    let provider = new ethers.providers.InfuraProvider("maticmum", {
-      infura: process.env.INFURA_PROJECT_ID,
-    });
+    let provider = new ethers.providers.InfuraProvider(
+      "maticmum",
+      "706af4be1ee6441e93cff2fccc22e8cd"
+    );
     console.log({ SPECTO_SWAP_ADDRESS });
 
     let spectoSwapContract = new ethers.Contract(
-      "0x89E87a7Ba64A4658c91DEa824D2876Fb8f4B68a2",
+      SPECTO_SWAP_ADDRESS,
       spectoSwapABI,
       data
     );
-    let res = await spectoSwapContract.swapToLens(tokenId);
+    let collectionContract = new ethers.Contract(
+      COLLECTION_NFT_ADDRESS,
+      erc721ABI,
+      data
+    );
+    console.log(data);
+    let resOut = await collectionContract.setApprovalForAll(
+      SPECTO_SWAP_ADDRESS,
+      true
+    );
+    await resOut.wait(2);
+
+    let res = await spectoSwapContract.connect(data).swapToLens(tokenId);
     console.log(res);
   }
 
   async function swapFromLens(tokenId: number) {
-    let provider = new ethers.providers.InfuraProvider("maticmum", {
-      infura: process.env.INFURA_PROJECT_ID,
-    });
+    let provider = new ethers.providers.InfuraProvider(
+      "maticmum",
+      "706af4be1ee6441e93cff2fccc22e8cd"
+    );
+    console.log({ SPECTO_SWAP_ADDRESS });
+
     let spectoSwapContract = new ethers.Contract(
-      "0x89E87a7Ba64A4658c91DEa824D2876Fb8f4B68a2",
+      SPECTO_SWAP_ADDRESS,
       spectoSwapABI,
       data
     );
-    let res = await spectoSwapContract.swapFromLens(tokenId);
+    // Follow NFT approval
+    let followNFTAddress = localStorage.getItem("followAddress");
+    let followNFTContract = new ethers.Contract(
+      followNFTAddress,
+      erc721ABI,
+      data
+    );
+    console.log(data);
+    let resOut = await followNFTContract.setApprovalForAll(
+      SPECTO_SWAP_ADDRESS,
+      true
+    );
+    await resOut.wait(2);
+
+    let res = await spectoSwapContract.connect(data).swapFromLens(tokenId);
     console.log(res);
   }
   function closeModal() {
@@ -58,11 +96,11 @@ export const Follow = (tokenId) => {
   };
 
   const Follow = (tokenId: number) => {
-    swapToLens(0);
+    swapToLens(1);
   };
 
   const Unfollow = (tokenId: number) => {
-    swapFromLens(0);
+    swapFromLens(1);
   };
 
   //input for token Id
