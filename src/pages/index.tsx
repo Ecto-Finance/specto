@@ -6,7 +6,7 @@ import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
 import { ethers } from "ethers";
-
+import { COLLECTION_NFT_ADDRESS } from "lib/config/env";
 /**
  * Collections page.
  */
@@ -32,10 +32,11 @@ const Home = ({ profiles, address }) => {
       "706af4be1ee6441e93cff2fccc22e8cd"
     );
     let lensHubContract = new ethers.Contract(
-      "0xcc55940eFd4a2fbd08f5422D2Df2c3e5ea9a33E7",
+      COLLECTION_NFT_ADDRESS,
       collectionABI,
       data
     );
+    console.log("COLLECTION ADDRESS: ", COLLECTION_NFT_ADDRESS);
     let res = await lensHubContract.walletOfOwner(accountData.address);
     console.log(res.toString());
 
