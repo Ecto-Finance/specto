@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
 import { ethers } from "ethers";
 import { COLLECTION_NFT_ADDRESS } from "lib/config/env";
+import { useFollowNfTsOwnedLazyQuery } from "generated/graphql";
 /**
  * Collections page.
  */
@@ -14,13 +15,9 @@ import { COLLECTION_NFT_ADDRESS } from "lib/config/env";
 const Home = ({ profiles, address }) => {
   const [{ data: accountData }] = useAccount({ fetchEns: true });
   const [{ data, error, loading }, getSigner] = useSigner();
+  const [getFollowNFTs] = useFollowNfTsOwnedLazyQuery();
   const [nfts, setNfts] = useState(null);
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  console.log(accountData?.address);
+  const [lensNfts, setLensNfts] = useState([]);
 
   const collectionABI = [
     "function walletOfOwner(address _owner) public view returns(uint256[] memory)",
@@ -38,14 +35,28 @@ const Home = ({ profiles, address }) => {
     );
     console.log("COLLECTION ADDRESS: ", COLLECTION_NFT_ADDRESS);
     let res = await lensHubContract.walletOfOwner(accountData.address);
-    console.log(res.toString());
 
     setNfts(res.toString().split(","));
   }
 
+  const followNFTs = async () => {
+    let getFollowerNFTsOut = await getFollowNFTs({
+      variables: {
+        request: {
+          address: accountData.address,
+          profileId: localStorage.getItem("profileId"),
+        },
+      },
+    });
+
+    console.log(getFollowerNFTsOut);
+
+    setLensNfts(getFollowerNFTsOut.data.followerNftOwnedTokenIds.tokensIds);
+  };
+
   useEffect(() => {
-    walletOfOwner;
-  }, [nfts]);
+    console.log(lensNfts);
+  }, [lensNfts]);
 
   return (
     <div className="h-screen w-full justify-between bg-primary-light text-black dark:bg-primary-dark dark:text-white">
@@ -55,7 +66,7 @@ const Home = ({ profiles, address }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center bg-primary-light text-black dark:bg-primary-dark dark:text-white">
         <div className="text-center">
           {accountData?.address ? (
             <div>
@@ -66,24 +77,61 @@ const Home = ({ profiles, address }) => {
               >
                 Get Profiles
               </button>
-              <div className=" mx-auto mb-40 grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
-                {nfts &&
-                  nfts.map((nfts, index) => {
-                    return (
-                      <div key={index}>
-                        <div className="absolute ml-2 mt-1 dark:text-black">
-                          {" "}
-                          {nfts}
+              <button
+                className="mx-1 rounded-lg bg-primary-green py-2 px-4"
+                onClick={() => followNFTs()}
+              >
+                Get Follow NFTs
+              </button>
+              <div className="mt-6 flex flex-col items-center justify-center">
+                <p>Here are my NFTs</p>
+                <div className=" mx-auto mb-40 grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
+                  {nfts &&
+                    nfts.map((nfts, index) => {
+                      return (
+                        <div key={index}>
+                          <div className="absolute ml-2 mt-1 dark:text-black">
+                            {" "}
+                            {nfts}
+                          </div>
+                          <img
+                            src="/images/lens.jpg"
+                            alt=""
+                            className="rounded-2xl"
+                          />{" "}
+                          <Follow tokenId={nfts} />
                         </div>
-                        <img
-                          src="/images/lens.jpg"
-                          alt=""
-                          className="rounded-2xl"
-                        />{" "}
-                        <Follow tokenId={nfts} />
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center">
+                <p>Here are my Lens follow NFTs</p>
+                <div className=" mx-auto mb-40 grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
+                  {lensNfts &&
+                    lensNfts.map((nft, index) => {
+                      return (
+                        <div key={index}>
+                          <div className="absolute ml-2 mt-1 dark:text-black">
+                            {nft}
+                          </div>
+                          <img
+                            src="/images/lens.jpg"
+                            alt=""
+                            className="rounded-2xl"
+                          />{" "}
+                          <div className="space-x-4 ">
+                            <button
+                              type="button"
+                              className="inline-flex justify-center rounded-md border border-transparent bg-primary-green px-4 py-2 text-sm font-medium text-white hover:bg-opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-green focus-visible:ring-offset-2"
+                            >
+                              Unfollow
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
             </div>
           ) : (
