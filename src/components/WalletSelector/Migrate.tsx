@@ -29,18 +29,19 @@ export const Migrate = () => {
     "function follow(uint256[] calldata profileIds, bytes[] calldata datas) external",
   ];
 
-  async function sendFollow(profileId: number) {
+  async function sendFollow(profileId: string) {
     let provider = new ethers.providers.InfuraProvider(
       "maticmum",
       "706af4be1ee6441e93cff2fccc22e8cd"
     );
     let lensHubContract = new ethers.Contract(
-      "0x7c86e2a63941442462cce73EcA9F07F4Ad023261",
+      "0xd7B3481De00995046C7850bCe9a5196B7605c367",
       lensHubABI,
       data
     );
+    console.log(profileId);
     let res = await lensHubContract.follow([profileId], [[]]);
-    console.log(res);
+    return res;
   }
 
   function closeModal() {
@@ -52,7 +53,7 @@ export const Migrate = () => {
   }
 
   function buildProfileHandle() {
-    return "test" + (Math.random() * 100).toString();
+    return "test" + Math.floor(Math.random() * 10000).toString();
   }
 
   const findCollection = async (contractAddress: string) => {
@@ -113,18 +114,26 @@ export const Migrate = () => {
       console.log(profileIdOut);
       console.log(profileIdOut.data.profiles.items[0].ownedBy);
       console.log(profileIdOut.data.profiles.items[0].id);
-      // 4. GET FollowNFT Address from profileid & Migrator Address
-      // let getFollowerNFTsOut = await getFollowNFTs({
-      //   variables: {
-      //     request: {
-      //       address: profileIdOut.data.profiles.items[0].ownedBy,
-      //       profileId: profileIdOut.data.profiles.items[0].id,
-      //     },
-      //   },
-      // });
-      // console.log(getFollowerNFTsOut);
-      // 5. Call Follow, which mints to the Migrator Address
-      //sendFollow(889);
+
+      // 4. Follow
+      let followTxOut = await sendFollow(
+        profileIdOut.data.profiles.items[0].id
+      );
+      console.log(followTxOut);
+      await followTxOut.wait(1);
+
+      // 5. GET FollowNFT Address from profileid & Migrator Address
+      let getFollowerNFTsOut = await getFollowNFTs({
+        variables: {
+          request: {
+            address: profileIdOut.data.profiles.items[0].ownedBy,
+            profileId: profileIdOut.data.profiles.items[0].id,
+          },
+        },
+      });
+      localStorage.setItem("profileId", profileIdOut.data.profiles.items[0].id);
+      console.log(getFollowerNFTsOut);
+      // 6. Call Follow, which mints to the Migrator Address
       // 6. Send FollowNFT, update spectoswap w/ address
       // 7. Send and Approve SpectoSwap FollowNFT
       /////////////////////////////////////////////////////////////////////////////////
