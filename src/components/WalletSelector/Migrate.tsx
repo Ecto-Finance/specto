@@ -37,6 +37,7 @@ export const Migrate = () => {
 
   const erc721ABI = [
     "function safeTransferFrom(address from,address to,uint256 tokenId) external",
+    "function setApprovalForAll(address operator, bool _approved)",
   ];
 
   const spectoSwapABI = [
@@ -111,7 +112,7 @@ export const Migrate = () => {
       await provider.waitForTransaction(
         //@ts-ignore
         createProfileOut.data.createProfile.txHash,
-        2
+        3
       );
       // 3. Get Profile Id
       console.log(
@@ -134,19 +135,19 @@ export const Migrate = () => {
         profileIdOut.data.profiles.items[0].id
       );
       console.log(followTxOut1);
-      await followTxOut1.wait(2);
+      await followTxOut1.wait(3);
       // 2
       let followTxOut2 = await sendFollow(
         profileIdOut.data.profiles.items[0].id
       );
       console.log(followTxOut2);
-      await followTxOut2.wait(2);
+      await followTxOut2.wait(3);
       // 3
       let followTxOut3 = await sendFollow(
         profileIdOut.data.profiles.items[0].id
       );
       console.log(followTxOut3);
-      await followTxOut3.wait(2);
+      await followTxOut3.wait(3);
 
       console.log(
         //@ts-ignore
@@ -183,13 +184,21 @@ export const Migrate = () => {
       );
       console.log(
         //@ts-ignore
-        `Sending tokenId:0 FollowerNFT from ${accountData.address} to SpectoSwap`
+        `Sent FollowerNFTs from ${accountData.address} to SpectoSwap`
       );
-
+      let resOut2 = await followNFT.setApprovalForAll(
+        SPECTO_SWAP_ADDRESS,
+        true
+      );
+      await resOut2.wait(4);
       // 8. Send FollowNFT, to SpectoSwap
-      let res = await followNFT
+      await followNFT
         .connect(data)
         .safeTransferFrom(accountData.address, SPECTO_SWAP_ADDRESS, 1);
+
+      await followNFT
+        .connect(data)
+        .safeTransferFrom(accountData.address, SPECTO_SWAP_ADDRESS, 2);
 
       // 9. Update spectoswap w/ address
       let spectoswap = new ethers.Contract(
@@ -200,6 +209,7 @@ export const Migrate = () => {
       await spectoswap.updateFollowNFTAddress(
         getFollowerNFTsOut.data.followerNftOwnedTokenIds.followerNftAddress
       );
+      console.log("Done");
 
       /////////////////////////////////////////////////////////////////////////////////
     } else {
