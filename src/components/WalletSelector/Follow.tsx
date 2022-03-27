@@ -5,7 +5,7 @@ import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
 
-export const Follow = (tokenId) => {
+export const Follow = ({ tokenId }) => {
   const [{ data: accountData }] = useAccount();
   const [{ data, error, loading }, getSigner] = useSigner();
   const [id, setId] = useState();
@@ -58,11 +58,11 @@ export const Follow = (tokenId) => {
   };
 
   const Follow = (tokenId: number) => {
-    swapToLens(0);
+    swapToLens(1);
   };
 
   const Unfollow = (tokenId: number) => {
-    swapFromLens(0);
+    swapFromLens(1);
   };
 
   //input for token Id

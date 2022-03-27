@@ -24,9 +24,9 @@ export const getStaticProps = async () => {
 };
 
 const Collections = ({ profiles, address }) => {
-  const [search, setSearch] = useState("");
   const [{ data: accountData }] = useAccount({ fetchEns: true });
   const [{ data, error, loading }, getSigner] = useSigner();
+  const [nfts, setNfts] = useState(null);
 
   useEffect(() => {
     console.log(data);
@@ -50,6 +50,8 @@ const Collections = ({ profiles, address }) => {
     );
     let res = await lensHubContract.walletOfOwner(accountData.address);
     console.log(res.toString());
+
+    setNfts(res.toString().split(","));
   }
 
   return (
@@ -69,30 +71,28 @@ const Collections = ({ profiles, address }) => {
           >
             Get Profiles
           </button>
-
+          <div className=" mx-auto  grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
+            {nfts &&
+              nfts.map((nfts, index) => {
+                return (
+                  <div key={index}>
+                    <div className="absolute ml-2 mt-1 dark:text-black">
+                      {" "}
+                      {nfts}
+                    </div>
+                    <img
+                      src="/images/lens.jpg"
+                      alt=""
+                      className="rounded-2xl"
+                    />{" "}
+                    <Follow tokenId={nfts} />
+                  </div>
+                );
+              })}
+          </div>
           <div className="mx-auto mt-10 max-w-7xl justify-between">
             <div>Not Following</div>
-            <div className=" mx-auto grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
-              {profiles.map((profile) => (
-                <Link href={"/collections/" + profile.id} key={profile.id}>
-                  <a className="">
-                    <div className=" items-center space-y-2">
-                      <div className="rounded-2xl border border-gray-400 ">
-                        <div>
-                          <div className="absolute ml-2 mt-1 dark:text-black">
-                            #{profile.id}
-                          </div>
-                        </div>
-                        <div className="mt-2">{profile.name}</div>
-                        <div className="flex p-2">
-                          <Follow />
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-                </Link>
-              ))}
-            </div>
+
             <div>Following</div>
 
             <div className=" mx-auto grid grid-cols-2 gap-4 p-8 md:max-w-7xl md:grid-cols-4 lg:grid-cols-6">
